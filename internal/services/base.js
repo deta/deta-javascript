@@ -17,7 +17,8 @@ class Base extends BaseService {
     const { status, response } = await this.request(
       `/${this.tableName}/items/${key}`
     );
-
+    
+    if (status === 404) return null;
     return response;
   }
 
