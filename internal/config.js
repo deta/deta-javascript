@@ -10,8 +10,7 @@ class Config {
 
     const projectId = frags[0].substring(2);
 
-    const _host = host || process.env.DETA_BASE_HOST;
-    if (!_host) throw new Error('Host not defined!');
+    const _host = host || process.env.DETA_BASE_HOST || 'database.deta.sh/v1';
 
     this.getProjectKey = () => projectKey;
     this.getProjectId = () => projectId;
