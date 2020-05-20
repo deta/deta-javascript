@@ -1,14 +1,9 @@
 class Config {
   constructor(projectKey, host) {
-    /*  "a" is the region (used by the backend)
-     *  "0" is a reserved flag, might be used by the backend
-     *  "abcxyz" is the project id.
-     *  "_" is a separator
-     *  "somerandomstring..." is the actual secret part of the key. */
 
     const frags = projectKey.split('_');
 
-    const projectId = frags[0].substring(2);
+    const projectId = frags[0];
 
     const _host = host || process.env.DETA_BASE_HOST || 'database.deta.sh/v1';
 
