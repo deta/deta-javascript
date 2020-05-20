@@ -7,9 +7,6 @@
   },
   "author": "Deta",
   "license": "MIT",
-  "peerDependencies": {
-    "node-fetch": "^2.6.0"
-  },
   "dependencies": {
     "node-fetch": "^2.6.0"
   }
