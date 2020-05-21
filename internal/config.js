@@ -1,7 +1,11 @@
 class Config {
   constructor(projectKey, host) {
+    const _projectKey = projectKey || process.env.DETA_BASE_PROJECT_KEY;
+    if (!_projectKey) {
+      throw new Error('Project key is not defined');
+    }
 
-    const frags = projectKey.split('_');
+    const frags = _projectKey.split('_');
 
     const projectId = frags[0];
 
