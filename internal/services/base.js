@@ -17,7 +17,7 @@ class Base extends BaseService {
     const { status, response } = await this.request(
       `/${this.tableName}/items/${key}`
     );
-    
+
     if (status === 404) return null;
     return response;
   }
@@ -28,7 +28,10 @@ class Base extends BaseService {
      * `key` could be provided as function argument or a field in the data object.
      * If `key` is not provided, the server will generate a random 12 chars key.
      */
-    const payload = typeof item === 'object' ? item : { value: item };
+    const payload =
+      item instanceof Object && item.constructor === Object
+        ? item
+        : { value: item };
 
     if (key) payload['key'] = key;
 
@@ -83,7 +86,10 @@ class Base extends BaseService {
   }
 
   async insert(item, key) {
-    const payload = typeof item === 'object' ? item : { value: item };
+    const payload =
+      item instanceof Object && item.constructor === Object
+        ? item
+        : { value: item };
 
     if (key) payload['key'] = key;
 
