@@ -106,22 +106,24 @@ class Base extends BaseService {
       throw new Error(`Item with key ${key} already exists`);
   }
 
-  async *fetch(query = [], limit, buffer) {
-    /* fetch items from the database.
-     * `query` is an optional filter or list of filters. Without filter, it will return the whole db.
-     * `limit` is the maximim number of items to be returned. default is None but the maximum is 1MB.
+  async *fetch(query = [], pages = 10, buffer = undefined) {
+    /* Fetch items from the database.
      *
-     * Returns a generator, should be looped over until no results are left.
+     * 'query' is a filter or a list of filters. Without filter, it'll return the whole db
+     * Returns a generator with all the result.
+     *  We will paginate the request based on `buffer`.
      */
+    if (pages <= 0) return;
+    const _query = Array.isArray(query) ? query : [query];
 
-    let _status = undefined;
-    let _last = undefined;
-    let _items = undefined;
+    let _status;
+    let _last;
+    let _items;
     let _count = 0;
 
     do {
       const payload = {
-        query,
+        query: _query,
         limit: buffer,
         last: _last,
       };
@@ -135,21 +137,13 @@ class Base extends BaseService {
       const { paging, items } = response;
       const { last } = paging;
 
-      if (_count + items.length > limit) {
-        const remainderSize = _count + items.length - limit;
-
-        // terminate the iterator after yielding the leftovers
-        yield items.slice(0, limit - remainderSize - 1);
-        return;
-      }
-
       yield items;
 
       _last = last;
       _status = status;
       _items = items;
-      _count = _count + items.length;
-    } while (_status === 200 && _last && _items.length > 0 && _count < limit);
+      _count += 1;
+    } while (_status === 200 && _last && pages > _count);
   }
 }
 module.exports = Base;
