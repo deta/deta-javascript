@@ -58,7 +58,7 @@ class Base extends BaseService {
     const _items = [];
 
     items.map((item) => {
-      if (typeof item !== 'object') _items.push({ value: item });
+      if (typeof item !== 'object' || Array.isArray(item)) _items.push({ value: item });
       else _items.push(item);
     });
 
