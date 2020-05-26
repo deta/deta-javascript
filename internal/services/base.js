@@ -17,7 +17,7 @@ class Base extends BaseService {
     const { status, response } = await this.request(
       `/${this.tableName}/items/${key}`
     );
-    
+
     if (status === 404) return null;
     return response;
   }
@@ -28,7 +28,10 @@ class Base extends BaseService {
      * `key` could be provided as function argument or a field in the data object.
      * If `key` is not provided, the server will generate a random 12 chars key.
      */
-    const payload = typeof item === 'object' ? item : { value: item };
+    const payload =
+      item instanceof Object && item.constructor === Object
+        ? item
+        : { value: item };
 
     if (key) payload['key'] = key;
 
@@ -49,10 +52,13 @@ class Base extends BaseService {
     if (!(items instanceof Array))
       throw new TypeError('Items must be an array');
 
+    if (items.length >= 25)
+      throw new Error("We can't put more than 25 items at a time");
+
     const _items = [];
 
     items.map((item) => {
-      if (typeof item !== 'object') _items.push({ value: item });
+      if (typeof item !== 'object' || Array.isArray(item)) _items.push({ value: item });
       else _items.push(item);
     });
 
@@ -83,7 +89,10 @@ class Base extends BaseService {
   }
 
   async insert(item, key) {
-    const payload = typeof item === 'object' ? item : { value: item };
+    const payload =
+      item instanceof Object && item.constructor === Object
+        ? item
+        : { value: item };
 
     if (key) payload['key'] = key;
 
@@ -100,22 +109,24 @@ class Base extends BaseService {
       throw new Error(`Item with key ${key} already exists`);
   }
 
-  async *fetch(query = [], limit, buffer) {
-    /* fetch items from the database.
-     * `query` is an optional filter or list of filters. Without filter, it will return the whole db.
-     * `limit` is the maximim number of items to be returned. default is None but the maximum is 1MB.
+  async *fetch(query = [], pages = 10, buffer = undefined) {
+    /* Fetch items from the database.
      *
-     * Returns a generator, should be looped over until no results are left.
+     * 'query' is a filter or a list of filters. Without filter, it'll return the whole db
+     * Returns a generator with all the result.
+     *  We will paginate the request based on `buffer`.
      */
+    if (pages <= 0) return;
+    const _query = Array.isArray(query) ? query : [query];
 
-    let _status = undefined;
-    let _last = undefined;
-    let _items = undefined;
+    let _status;
+    let _last;
+    let _items;
     let _count = 0;
 
     do {
       const payload = {
-        query,
+        query: _query,
         limit: buffer,
         last: _last,
       };
@@ -129,21 +140,13 @@ class Base extends BaseService {
       const { paging, items } = response;
       const { last } = paging;
 
-      if (_count + items.length > limit) {
-        const remainderSize = _count + items.length - limit;
-
-        // terminate the iterator after yielding the leftovers
-        yield items.slice(0, limit - remainderSize - 1);
-        return;
-      }
-
       yield items;
 
       _last = last;
       _status = status;
       _items = items;
-      _count = _count + items.length;
-    } while (_status === 200 && _last && _items.length > 0 && _count < limit);
+      _count += 1;
+    } while (_status === 200 && _last && pages > _count);
   }
 }
 module.exports = Base;
