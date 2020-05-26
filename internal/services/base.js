@@ -1,5 +1,7 @@
 const BaseService = require('./base-service');
 
+let isObject = i => Object.prototype.toString.call(i) === "[object Object]";
+
 class Base extends BaseService {
   constructor(deta, tableName) {
     super(deta);
@@ -28,10 +30,7 @@ class Base extends BaseService {
      * `key` could be provided as function argument or a field in the data object.
      * If `key` is not provided, the server will generate a random 12 chars key.
      */
-    const payload =
-      item instanceof Object && item.constructor === Object
-        ? item
-        : { value: item };
+    const payload = isObject(item) ? item : { value: item };
 
     if (key) payload['key'] = key;
 
@@ -58,8 +57,8 @@ class Base extends BaseService {
     const _items = [];
 
     items.map((item) => {
-      if (typeof item !== 'object' || Array.isArray(item)) _items.push({ value: item });
-      else _items.push(item);
+      if (isObject(item)) _items.push(item);
+      else _items.push({ value: item });
     });
 
     const { status, response } = await this.request(
@@ -89,11 +88,8 @@ class Base extends BaseService {
   }
 
   async insert(item, key) {
-    const payload =
-      item instanceof Object && item.constructor === Object
-        ? item
-        : { value: item };
 
+    const payload = isObject(item) ? item : { value: item };
     if (key) payload['key'] = key;
 
     const { status, response } = await this.request(
