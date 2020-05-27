@@ -168,11 +168,14 @@ class Base extends BaseService {
       `/${this.tableName}/items/${key}`,
       payload, 
       'PATCH'
-    )
+    );
+
     if (status == 200){
-      return null
+      return null;
+    } else if (status == 404){
+      throw new Error(`Key '${key}' not found`);
     } else{
-      throw new Error(response.errors[0])
+      throw new Error(response.errors[0]);
     }
   }
 }
