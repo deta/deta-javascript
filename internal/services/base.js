@@ -154,7 +154,7 @@ class Base extends BaseService {
     if(typeof key !== 'string') throw new TypeError('Key must be a string');
     if(!isObject(updates)) throw new TypeError('Updates must be a JSON object');
 
-    payload = {set: {}, delete: []};
+    const payload = {set: {}, delete: []};
     
     for (let [key, value] of Object.entries(updates)) {
       if (value instanceof Trim){
@@ -179,6 +179,4 @@ class Base extends BaseService {
     }
   }
 }
-
-
 module.exports = Base;
