@@ -2,10 +2,15 @@ const BaseService = require('./base-service');
 
 let isObject = i => Object.prototype.toString.call(i) === "[object Object]";
 
+class Trim{}
+
 class Base extends BaseService {
   constructor(deta, tableName) {
     super(deta);
     this.getTableName = () => tableName;
+    this.util = {
+      trim : () => new Trim()
+    };
   }
 
   get tableName() {
@@ -144,5 +149,33 @@ class Base extends BaseService {
       _count += 1;
     } while (_status === 200 && _last && pages > _count);
   }
+
+  async update(updates, key){
+    if(typeof key !== 'string') throw new TypeError('Key must be a string');
+    if(!isObject(updates)) throw new TypeError('Updates must be a JSON object');
+
+    payload = {set: {}, delete: []};
+    
+    for (let [key, value] of Object.entries(updates)) {
+      if (value instanceof Trim){
+        payload.delete.push(key);
+      } else {
+        payload.set[key] = value;
+      }
+    }
+
+    const {status, response } = await this.request(
+      `/${this.tableName}/items/${key}`,
+      payload, 
+      'PATCH'
+    )
+    if (status == 200){
+      return null
+    } else{
+      throw new Error(response.errors[0])
+    }
+  }
 }
+
+
 module.exports = Base;

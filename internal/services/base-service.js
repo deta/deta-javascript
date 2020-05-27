@@ -44,7 +44,12 @@ class BaseService {
     const response = await _fetch(`${this._baseURL}${route}`, request);
     const status = response.status;
 
+    if (status === 401){
+      throw new Error("Unauthorized");
+    }
+
     const data = await response.json();
+    
     return { status, response: data };
   }
 }
