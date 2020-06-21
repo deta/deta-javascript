@@ -10,8 +10,8 @@ const getEnv = function getEnv(name, msg = '') {
   
 
 module.exports = async function email(to, subject, message, charset = 'UTF-8') {
-  const pid = getEnv('AWS_LAMBDA_FUNCTION_NAME')
-  const apiKey = getEnv('DETA_API_KEY') // DETA_PROJECT_KEY ?
+  const pid = getEnv('AWS_LAMBDA_FUNCTION_NAME');
+  const apiKey = getEnv('DETA_API_KEY'); // DETA_PROJECT_KEY ?
 
   const toAddresses = [];
   if (typeof to === 'string') toAddresses.push(to);
@@ -28,19 +28,17 @@ module.exports = async function email(to, subject, message, charset = 'UTF-8') {
   const headers = {
     'X-API-Key': apiKey  
   };
-
-  return new Promise((resolve, reject)=> {
+  
+  
+  return new Promise((resolve, reject) => {
     const respData = [];
 
     const options = {
-      hostname: getEnv('DETA_MAILER_URL').split("://")[1],
-      port: 443,
-      path : `/mail/${pid}`,
       method: 'POST',
       headers,
     }; 
 
-    const req = https.request(options, (res) => {
+    const req = https.request(`${getEnv('DETA_MAILER_URL')}/mail/${pid}`, options, (res) => {
       res.on('data', (chunk) => {
         respData.push(chunk);
       });
@@ -64,5 +62,5 @@ module.exports = async function email(to, subject, message, charset = 'UTF-8') {
 
     req.write(JSON.stringify(data));
     req.end();
-  });  
+  }); 
 };

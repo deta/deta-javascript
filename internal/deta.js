@@ -1,6 +1,7 @@
 const _Base = require('./services/base');
-const mail = require('./deta/internal/mail');
+const email = require('./services/mail');
 const _Config = require('./config');
+
 
 class Deta {
   constructor(projectKey, host) {
@@ -11,24 +12,15 @@ class Deta {
   get config() {
     return this.getConfig();
   }
-
-  sendMail (to, subject, message, charset = 'UTF-8') {
-    return mail(to, subject, message, charset = 'UTF-8');
+  
+  async sendMail(to, subj, mess, charSet) {
+    return email(to, subj, mess, charSet);
   }
+
 
   Base(tableName) {
     return new _Base(this, tableName);
   }
 }
 
-let exportObj = { Deta };
-
-try {
-  const App = require("detalib");
-  exportObj.app = App();
-  exportObj.App = App;
-} catch (e) {
-
-}
-
-module.exports = exportObj;
+module.exports = Deta;
