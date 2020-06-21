@@ -1,4 +1,5 @@
 const _Base = require('./services/base');
+const mail = require('./deta/internal/mail');
 const _Config = require('./config');
 
 class Deta {
@@ -9,6 +10,10 @@ class Deta {
 
   get config() {
     return this.getConfig();
+  }
+
+  sendMail (to, subject, message, charset = 'UTF-8') {
+    return mail(to, subject, message, charset = 'UTF-8');
   }
 
   Base(tableName) {
