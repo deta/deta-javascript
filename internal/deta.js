@@ -1,5 +1,5 @@
 const _Base = require('./services/base');
-const email = require('./services/mail');
+const email = require('./services/email');
 const _Config = require('./config');
 
 
@@ -13,8 +13,8 @@ class Deta {
     return this.getConfig();
   }
   
-  async sendMail(to, subj, mess, charSet) {
-    return email(to, subj, mess, charSet);
+  async sendEmail(to, subj, mess, charset) {
+    return email(to, subj, mess, charset);
   }
 
 

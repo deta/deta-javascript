@@ -7,7 +7,7 @@ function Deta(projectKey, host) {
 let exportObj = { Deta };
 
 try {
-  const { App } = require("detalib"); // how to import from a layer?
+  const { App } = require("detalib");
   exportObj.app = App();
   exportObj.App = App;
 } catch (e) {
