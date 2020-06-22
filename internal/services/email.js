@@ -9,7 +9,7 @@ const getEnv = function getEnv(name, msg = '') {
   };
   
 
-module.exports = async function email(deta, to, subject, message, charset = 'UTF-8') {
+module.exports = async function email(to, subject, message, charset = 'UTF-8') {
   const pid = getEnv('AWS_LAMBDA_FUNCTION_NAME');
   const projectKey = getEnv('DETA_PROJECT_KEY');
 
@@ -26,7 +26,7 @@ module.exports = async function email(deta, to, subject, message, charset = 'UTF
   };
 
   const headers = {
-    'X-API-Key': projectKey  
+    'X-API-Key': projectKey
   };
   
   
