@@ -1,6 +1,6 @@
 class Config {
   constructor(projectKey, host) {
-    const _projectKey = projectKey || process.env.DETA_BASE_PROJECT_KEY;
+    const _projectKey = projectKey || process.env.DETA_PROJECT_KEY;
     if (!_projectKey) {
       throw new Error('Project key is not defined');
     }

@@ -5,9 +5,24 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "main": "index.js",
   "author": "Deta",
   "license": "MIT",
   "dependencies": {
     "node-fetch": "^2.6.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deta/deta-javascript.git"
+  },
+  "keywords": [
+    "Deta",
+    "SDK",
+    "for",
+    "Node.js"
+  ],
+  "bugs": {
+    "url": "https://github.com/deta/deta-javascript/issues"
+  },
+  "homepage": "https://github.com/deta/deta-javascript#readme"
 }
