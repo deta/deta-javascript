@@ -1,10 +1,12 @@
 const fetchModule = require('../fetch');
 const https = require('https');
+const { FetchError } = require('node-fetch');
 
 class BaseService {
   constructor(deta) {
     this._getDeta = () => deta;
-    const agent = new https.Agent({ keepAlive: true });
+    const options = {keepAlive: true};
+    const agent = new https.Agent(options);
     this._getAgent = () => agent;
   }
 
@@ -41,15 +43,24 @@ class BaseService {
     if (method !== 'GET') request['body'] = JSON.stringify(payload);
     request['agent'] = this._agent;
 
-    const response = await _fetch(`${this._baseURL}${route}`, request);
+    var response = {};
+    try {
+      response = await _fetch(`${this._baseURL}${route}`, request);
+    } catch (e){
+      // retry on fetchError
+      if (e instanceof FetchError){
+        response = await _fetch(`${this._baseURL}${route}`, request);
+      } else{
+        throw e
+      }
+    }
+    
     const status = response.status;
-
     if (status === 401){
       throw new Error("Unauthorized");
     }
 
     const data = await response.json();
-    
     return { status, response: data };
   }
 }
