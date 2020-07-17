@@ -4,12 +4,43 @@ let isObject = i => Object.prototype.toString.call(i) === "[object Object]";
 
 class Trim{}
 
+class Increment{
+  constructor(value){
+    this.val = value;
+    if (!value){
+      this.val = 1 
+    }
+  }
+}
+
+class Append{
+  constructor(value){
+    this.val = value;
+    if (!Array.isArray(value)){
+      this.val = [value];
+    }
+  }
+}
+
+class Prepend{
+  constructor(value){
+    this.val = value;
+    if (!Array.isArray(value)){
+      this.val = [value];
+    }
+  }
+}
+
+
 class Base extends BaseService {
   constructor(deta, tableName) {
     super(deta);
     this.getTableName = () => tableName;
     this.util = {
-      trim : () => new Trim()
+      trim : () => new Trim(),
+      increment: (value) => new Increment(value),
+      append: (value) => new Append(value),
+      prepend: (value) => new Prepend(value)
     };
   }
 
@@ -154,11 +185,17 @@ class Base extends BaseService {
     if(typeof key !== 'string') throw new TypeError('Key must be a string');
     if(!isObject(updates)) throw new TypeError('Updates must be a JSON object');
 
-    const payload = {set: {}, delete: []};
+    const payload = {set: {}, increment: {}, append: {}, prepend: {}, delete: []};
     
     for (let [key, value] of Object.entries(updates)) {
       if (value instanceof Trim){
         payload.delete.push(key);
+      } else if (value instanceof Increment){
+        payload.increment[key] = value.val;
+      } else if (value instanceof Append){
+        payload.append[key] = value.val;
+      } else if (value instanceof Prepend){
+        payload.prepend[key] = value.val;
       } else {
         payload.set[key] = value;
       }
