@@ -8,15 +8,16 @@ class Deta {
     var configParams; 
     if (authToken){
         configParams = {
-          authType = "bearer",
-          projectId = projectKey,
-          host = host,
+          authType: "bearer",
+          projectId: projectKey,
+          authToken: authToken,
+          host: host,
         }; 
     } else {
         configParams = {
-          authType = "api-key",
-          projectKey = projectKey,
-          host = host
+          authType: "api-key",
+          projectKey: projectKey,
+          host: host,
         } 
     }
     const config = new _Config(configParams);

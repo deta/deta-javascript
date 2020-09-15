@@ -21,7 +21,7 @@ class Config {
     this.getProjectId = () => _projectId;
     this.getHost = () => _host;
     this.getAuthToken = () => _authToken;
-    this.getauthType = () => _authType;
+    this.getAuthType = () => _authType;
   }
 
   get projectKey() {
