@@ -4,8 +4,22 @@ const _Config = require('./config');
 
 
 class Deta {
-  constructor(projectKey, host) {
-    const config = new _Config(projectKey, host);
+  constructor(projectKey, authToken, host) {
+    var configParams; 
+    if (authToken){
+        configParams = {
+          authType = "bearer",
+          projectId = projectKey,
+          host = host,
+        }; 
+    } else {
+        configParams = {
+          authType = "api-key",
+          projectKey = projectKey,
+          host = host
+        } 
+    }
+    const config = new _Config(configParams);
     this.getConfig = () => config;
   }
 
