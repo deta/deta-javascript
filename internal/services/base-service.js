@@ -24,11 +24,17 @@ class BaseService {
   }
 
   get headers() {
-    const { projectKey } = this._deta.config;
+    const { projectKey, authToken, authType } = this._deta.config;
 
+    if (authType === "api-key"){
+      return {
+        'X-API-Key': projectKey,
+        'Content-Type': 'application/json',
+      };
+    }
     return {
-      'X-API-Key': projectKey,
-      'Content-Type': 'application/json',
+      'Authorization': authToken,
+      'Content-Type': 'application/json'
     };
   }
 

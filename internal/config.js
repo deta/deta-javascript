@@ -1,19 +1,27 @@
 class Config {
-  constructor(projectKey, host) {
-    const _projectKey = projectKey || process.env.DETA_PROJECT_KEY;
-    if (!_projectKey) {
-      throw new Error('Project key is not defined');
+  constructor(config) {
+    const _host = config.host || process.env.DETA_BASE_HOST || 'database.deta.sh/v1';
+
+    const _authType = config.authType;
+
+    var _projectKey, _projectId, _authToken;
+
+    if (config.authType === "api-key"){
+      _projectKey = config.projectKey || process.env.DETA_PROJECT_KEY;
+      if (!_projectKey) {
+        throw new Error('Project key is not defined');
+      }
+      _projectId = _projectKey.split('_')[0];
+    } else {
+      _authToken = config.authToken;
+      _projectId = config.projectId;
     }
 
-    const frags = _projectKey.split('_');
-
-    const projectId = frags[0];
-
-    const _host = host || process.env.DETA_BASE_HOST || 'database.deta.sh/v1';
-
-    this.getProjectKey = () => projectKey;
-    this.getProjectId = () => projectId;
+    this.getProjectKey = () => _projectKey;
+    this.getProjectId = () => _projectId;
     this.getHost = () => _host;
+    this.getAuthToken = () => _authToken;
+    this.getAuthType = () => _authType;
   }
 
   get projectKey() {
@@ -26,6 +34,14 @@ class Config {
 
   get host() {
     return this.getHost();
+  }
+
+  get authToken(){
+    return this.getAuthToken();
+  }
+
+  get authType(){
+    return this.getAuthType();
   }
 }
 
