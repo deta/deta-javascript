@@ -65,7 +65,7 @@ class Base extends BaseService {
 
     if (status === 404) {
       return null;
-    } else if (status == 400){
+    } else if (status === 400){
       throw new Error(response.errors[0])
     }
     return response;
