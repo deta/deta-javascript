@@ -49,14 +49,25 @@ class Base extends BaseService {
   }
 
   async get(key) {
-    if (typeof key !== 'string') throw new TypeError('Key must be a string');
+    if (typeof key !== 'string') {
+      throw new TypeError('Key must be a string');
+    } else if (key === ''){
+      throw new Error('Key is empty')
+    }
+
+    // encode key
+    key = encodeURIComponent(key)
 
     // request method is GET by default
     const { status, response } = await this.request(
       `/${this.tableName}/items/${key}`
     );
 
-    if (status === 404) return null;
+    if (status === 404) {
+      return null;
+    } else if (status === 400){
+      throw new Error(response.errors[0])
+    }
     return response;
   }
 
@@ -112,8 +123,14 @@ class Base extends BaseService {
      * key: the key of item to be deleted
      */
 
-    if (typeof key !== 'string') throw new TypeError('Key must be a string');
+    if (typeof key !== 'string') {
+      throw new TypeError('Key must be a string');
+    } else if (key === ''){
+      throw new Error('Key is empty')
+    }
 
+    // encode key
+    key = encodeURIComponent(key)
     const { response } = await this.request(
       `/${this.tableName}/items/${key}`,
       {},
@@ -182,7 +199,12 @@ class Base extends BaseService {
   }
 
   async update(updates, key){
-    if(typeof key !== 'string') throw new TypeError('Key must be a string');
+    if(typeof key !== 'string') {
+      throw new TypeError('Key must be a string');
+    } else if (key === ''){
+      throw new Error('Key is empty');
+    }
+
     if(!isObject(updates)) throw new TypeError('Updates must be a JSON object');
 
     const payload = {set: {}, increment: {}, append: {}, prepend: {}, delete: []};
@@ -201,6 +223,8 @@ class Base extends BaseService {
       }
     }
 
+    // encode key
+    key = encodeURIComponent(key)
     const {status, response } = await this.request(
       `/${this.tableName}/items/${key}`,
       payload, 
