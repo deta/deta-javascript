@@ -98,7 +98,7 @@ class Base extends BaseService {
     if (!(items instanceof Array))
       throw new TypeError('Items must be an array');
 
-    if (items.length >= 25)
+    if (items.length > 25)
       throw new Error("We can't put more than 25 items at a time");
 
     const _items = [];
