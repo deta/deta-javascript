@@ -1,0 +1,24 @@
+name: Lint on pull request
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  full_ci:
+    runs-on: ubuntu-18.04
+    steps:
+      # Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v1
+    - name: Install Node v12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - name: npm install
+      run: npm install
+    - name: eslint
+      uses: icrawl/action-eslint@v1
+      with:
+        custom-glob: internal
+      
