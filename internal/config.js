@@ -1,12 +1,15 @@
 class Config {
   constructor(config) {
-    const _host = config.host || process.env.DETA_BASE_HOST || 'database.deta.sh/v1';
+    const _host =
+      config.host || process.env.DETA_BASE_HOST || 'database.deta.sh/v1';
 
     const _authType = config.authType;
 
-    var _projectKey, _projectId, _authToken;
+    let _projectKey;
+    let _projectId;
+    let _authToken;
 
-    if (config.authType === "api-key"){
+    if (config.authType === 'api-key') {
       _projectKey = config.projectKey || process.env.DETA_PROJECT_KEY;
       if (!_projectKey) {
         throw new Error('Project key is not defined');
@@ -36,11 +39,11 @@ class Config {
     return this.getHost();
   }
 
-  get authToken(){
+  get authToken() {
     return this.getAuthToken();
   }
 
-  get authType(){
+  get authType() {
     return this.getAuthType();
   }
 }

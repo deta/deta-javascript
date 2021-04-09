@@ -1,46 +1,45 @@
 const BaseService = require('./base-service');
 
-let isObject = i => Object.prototype.toString.call(i) === "[object Object]";
+const isObject = (i) => Object.prototype.toString.call(i) === '[object Object]';
 
-class Trim{}
+class Trim {}
 
-class Increment{
-  constructor(value){
+class Increment {
+  constructor(value) {
     this.val = value;
-    if (!value){
-      this.val = 1 
+    if (!value) {
+      this.val = 1;
     }
   }
 }
 
-class Append{
-  constructor(value){
+class Append {
+  constructor(value) {
     this.val = value;
-    if (!Array.isArray(value)){
+    if (!Array.isArray(value)) {
       this.val = [value];
     }
   }
 }
 
-class Prepend{
-  constructor(value){
+class Prepend {
+  constructor(value) {
     this.val = value;
-    if (!Array.isArray(value)){
+    if (!Array.isArray(value)) {
       this.val = [value];
     }
   }
 }
-
 
 class Base extends BaseService {
   constructor(deta, tableName) {
     super(deta);
     this.getTableName = () => tableName;
     this.util = {
-      trim : () => new Trim(),
+      trim: () => new Trim(),
       increment: (value) => new Increment(value),
       append: (value) => new Append(value),
-      prepend: (value) => new Prepend(value)
+      prepend: (value) => new Prepend(value),
     };
   }
 
@@ -51,12 +50,12 @@ class Base extends BaseService {
   async get(key) {
     if (typeof key !== 'string') {
       throw new TypeError('Key must be a string');
-    } else if (key === ''){
-      throw new Error('Key is empty')
+    } else if (key === '') {
+      throw new Error('Key is empty');
     }
 
     // encode key
-    key = encodeURIComponent(key)
+    key = encodeURIComponent(key);
 
     // request method is GET by default
     const { status, response } = await this.request(
@@ -65,8 +64,9 @@ class Base extends BaseService {
 
     if (status === 404) {
       return null;
-    } else if (status === 400){
-      throw new Error(response.errors[0])
+    }
+    if (status === 400) {
+      throw new Error(response.errors[0]);
     }
     return response;
   }
@@ -79,7 +79,7 @@ class Base extends BaseService {
      */
     const payload = isObject(item) ? item : { value: item };
 
-    if (key) payload['key'] = key;
+    if (key) payload.key = key;
 
     const { status, response } = await this.request(
       `/${this.tableName}/items`,
@@ -89,9 +89,7 @@ class Base extends BaseService {
       'PUT'
     );
 
-    return response && status === 207
-      ? response['processed']['items'][0]
-      : null;
+    return response && status === 207 ? response.processed.items[0] : null;
   }
 
   async putMany(items) {
@@ -125,12 +123,12 @@ class Base extends BaseService {
 
     if (typeof key !== 'string') {
       throw new TypeError('Key must be a string');
-    } else if (key === ''){
-      throw new Error('Key is empty')
+    } else if (key === '') {
+      throw new Error('Key is empty');
     }
 
     // encode key
-    key = encodeURIComponent(key)
+    key = encodeURIComponent(key);
     const { response } = await this.request(
       `/${this.tableName}/items/${key}`,
       {},
@@ -141,9 +139,8 @@ class Base extends BaseService {
   }
 
   async insert(item, key) {
-
     const payload = isObject(item) ? item : { value: item };
-    if (key) payload['key'] = key;
+    if (key) payload.key = key;
 
     const { status, response } = await this.request(
       `/${this.tableName}/items`,
@@ -154,8 +151,7 @@ class Base extends BaseService {
     );
 
     if (status === 201) return response;
-    else if (status == 409)
-      throw new Error(`Item with key ${key} already exists`);
+    if (status == 409) throw new Error(`Item with key ${key} already exists`);
   }
 
   async *fetch(query = [], pages = 10, buffer = undefined) {
@@ -198,25 +194,32 @@ class Base extends BaseService {
     } while (_status === 200 && _last && pages > _count);
   }
 
-  async update(updates, key){
-    if(typeof key !== 'string') {
+  async update(updates, key) {
+    if (typeof key !== 'string') {
       throw new TypeError('Key must be a string');
-    } else if (key === ''){
+    } else if (key === '') {
       throw new Error('Key is empty');
     }
 
-    if(!isObject(updates)) throw new TypeError('Updates must be a JSON object');
+    if (!isObject(updates))
+      throw new TypeError('Updates must be a JSON object');
 
-    const payload = {set: {}, increment: {}, append: {}, prepend: {}, delete: []};
-    
-    for (let [key, value] of Object.entries(updates)) {
-      if (value instanceof Trim){
+    const payload = {
+      set: {},
+      increment: {},
+      append: {},
+      prepend: {},
+      delete: [],
+    };
+
+    for (const [key, value] of Object.entries(updates)) {
+      if (value instanceof Trim) {
         payload.delete.push(key);
-      } else if (value instanceof Increment){
+      } else if (value instanceof Increment) {
         payload.increment[key] = value.val;
-      } else if (value instanceof Append){
+      } else if (value instanceof Append) {
         payload.append[key] = value.val;
-      } else if (value instanceof Prepend){
+      } else if (value instanceof Prepend) {
         payload.prepend[key] = value.val;
       } else {
         payload.set[key] = value;
@@ -224,18 +227,19 @@ class Base extends BaseService {
     }
 
     // encode key
-    key = encodeURIComponent(key)
-    const {status, response } = await this.request(
+    key = encodeURIComponent(key);
+    const { status, response } = await this.request(
       `/${this.tableName}/items/${key}`,
-      payload, 
+      payload,
       'PATCH'
     );
 
-    if (status == 200){
+    if (status == 200) {
       return null;
-    } else if (status == 404){
+    }
+    if (status == 404) {
       throw new Error(`Key '${key}' not found`);
-    } else{
+    } else {
       throw new Error(response.errors[0]);
     }
   }

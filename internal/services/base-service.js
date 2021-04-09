@@ -1,11 +1,11 @@
-const fetchModule = require('../fetch');
 const https = require('https');
 const { FetchError } = require('node-fetch');
+const fetchModule = require('../fetch');
 
 class BaseService {
   constructor(deta) {
     this._getDeta = () => deta;
-    const options = {keepAlive: true};
+    const options = { keepAlive: true };
     const agent = new https.Agent(options);
     this._getAgent = () => agent;
   }
@@ -26,15 +26,15 @@ class BaseService {
   get headers() {
     const { projectKey, authToken, authType } = this._deta.config;
 
-    if (authType === "api-key"){
+    if (authType === 'api-key') {
       return {
         'X-API-Key': projectKey,
         'Content-Type': 'application/json',
       };
     }
     return {
-      'Authorization': authToken,
-      'Content-Type': 'application/json'
+      Authorization: authToken,
+      'Content-Type': 'application/json',
     };
   }
 
@@ -46,24 +46,24 @@ class BaseService {
       headers: this.headers,
     };
 
-    if (method !== 'GET') request['body'] = JSON.stringify(payload);
-    request['agent'] = this._agent;
+    if (method !== 'GET') request.body = JSON.stringify(payload);
+    request.agent = this._agent;
 
-    var response = {};
+    let response = {};
     try {
       response = await _fetch(`${this._baseURL}${route}`, request);
-    } catch (e){
+    } catch (e) {
       // retry on fetchError
-      if (e instanceof FetchError){
+      if (e instanceof FetchError) {
         response = await _fetch(`${this._baseURL}${route}`, request);
-      } else{
-        throw e
+      } else {
+        throw e;
       }
     }
-    
-    const status = response.status;
-    if (status === 401){
-      throw new Error("Unauthorized");
+
+    const { status } = response;
+    if (status === 401) {
+      throw new Error('Unauthorized');
     }
 
     const data = await response.json();
