@@ -151,7 +151,7 @@ class Base extends BaseService {
     );
 
     if (status === 201) return response;
-    if (status == 409) throw new Error(`Item with key ${key} already exists`);
+    if (status === 409) throw new Error(`Item with key ${key} already exists`);
   }
 
   async *fetch(query = [], pages = 10, buffer = undefined) {
@@ -234,10 +234,10 @@ class Base extends BaseService {
       'PATCH'
     );
 
-    if (status == 200) {
+    if (status === 200) {
       return null;
     }
-    if (status == 404) {
+    if (status === 404) {
       throw new Error(`Key '${key}' not found`);
     } else {
       throw new Error(response.errors[0]);

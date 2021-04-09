@@ -28,7 +28,7 @@ module.exports = async function email(to, subject, message, charset = 'UTF-8') {
     'X-API-Key': projectKey,
   };
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const respData = [];
 
     const options = {
