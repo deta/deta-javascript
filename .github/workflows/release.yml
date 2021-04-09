@@ -1,0 +1,28 @@
+name: Publish SDK
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - release
+
+jobs:
+  publish:
+    runs-on: ubuntu-18.04
+    steps:
+      # Get code into container
+      - name: Checkout code
+        uses: actions/checkout@v2
+      # Set up Node 12
+      - name: Install Node v12
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+          registry-url: "https://registry.npmjs.org"
+      # Install app
+      - name: Install application
+        run: npm install
+      # Publish app
+      - name: Publish application
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.DETA_SDK_NPM_REGISTRY_KEY}}
