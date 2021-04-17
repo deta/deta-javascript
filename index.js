@@ -4,14 +4,12 @@ function Deta(projectKey, host) {
   return new _Deta(projectKey, host);
 }
 
-let exportObj = { Deta };
+const exportObj = { Deta };
 
 try {
-  const { App } = require("detalib");
+  const { App } = require('detalib');
   exportObj.app = App();
   exportObj.App = App;
-} catch (e) {
-
-}
+} catch (e) {}
 
 module.exports = exportObj;
