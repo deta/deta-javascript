@@ -158,7 +158,7 @@ class Base extends BaseService {
       throw new Error(`Item with key ${key} already exists`);
   }
 
-  async *fetch(query = [], pages = 10, buffer = undefined) {
+  async *fetch(query = [], pages = 10, buffer = undefined, start = undefined) {
     /* Fetch items from the database.
      *
      * 'query' is a filter or a list of filters. Without filter, it'll return the whole db
@@ -169,7 +169,7 @@ class Base extends BaseService {
     const _query = Array.isArray(query) ? query : [query];
 
     let _status;
-    let _last;
+    let _last = start;
     let _items;
     let _count = 0;
 
