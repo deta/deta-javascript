@@ -69,6 +69,32 @@ describe('Test base', () => {
       ],
       ['hello, worlds', { value: 'hello, worlds' }],
       [7, { value: 7 }],
+      [
+        {
+          key: 'user-a',
+          username: 'jimmy',
+          profile: {
+            age: 32,
+            active: false,
+            hometown: 'pittsburgh',
+          },
+          on_mobile: true,
+          likes: ['anime'],
+          purchases: 1,
+        },
+        {
+          key: 'user-a',
+          username: 'jimmy',
+          profile: {
+            age: 32,
+            active: false,
+            hometown: 'pittsburgh',
+          },
+          on_mobile: true,
+          likes: ['anime'],
+          purchases: 1,
+        },
+      ],
     ])(
       'by only passing data without key `insert(%p)`',
       async (input, expected) => {
@@ -129,19 +155,55 @@ describe('Test base', () => {
           },
         },
       ],
-    ])('putMany items`putMany("%s")`', async (items, expected) => {
+    ])('putMany items `putMany("%s")`', async (items, expected) => {
       const data = await db.putMany(items);
       expect(data).toMatchObject(expected);
     });
   });
 
+  describe('Base#update', () => {
+    it.each([
+      [
+        {
+          'profile.age': 33,
+          'profile.active': true,
+          'profile.email': 'jimmy@deta.sh',
+          'profile.hometown': db.util.trim(),
+          on_mobile: db.util.trim(),
+          purchases: db.util.increment(2),
+          likes: db.util.append('ramen'),
+        },
+        'user-a',
+        {
+          key: 'user-a',
+          username: 'jimmy',
+          profile: {
+            age: 33,
+            active: true,
+            email: 'jimmy@deta.sh',
+          },
+          likes: ['anime', 'ramen'],
+          purchases: 3,
+        },
+      ],
+    ])('update data `update(%p, "%s")`', async (updates, key, expected) => {
+      const data = await db.update(updates, key);
+      expect(data).toBeNull();
+      const updatedData = await db.get(key);
+      expect(updatedData).toEqual(expected);
+    });
+  });
+
   describe('Base#delete', () => {
-    it.each([['one'], ['this is some random key'], ['newKey'], ['my_abc2']])(
-      'delete data by using key `delete("%s")`',
-      async (key) => {
-        const data = await db.delete(key);
-        expect(data).toBeNull();
-      }
-    );
+    it.each([
+      ['one'],
+      ['this is some random key'],
+      ['newKey'],
+      ['my_abc2'],
+      ['user-a'],
+    ])('delete data by using key `delete("%s")`', async (key) => {
+      const data = await db.delete(key);
+      expect(data).toBeNull();
+    });
   });
 });
