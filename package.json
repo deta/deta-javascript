@@ -28,6 +28,7 @@
   "devDependencies": {
     "acorn-jsx": "^5.3.1",
     "babel-eslint": "^10.1.0",
+    "dotenv": "^8.5.1",
     "eslint": "^7.23.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-config-prettier": "^8.1.0",
