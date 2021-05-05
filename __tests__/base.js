@@ -24,10 +24,12 @@ describe('Test base', () => {
       ['hello, worlds', { value: 'hello, worlds' }],
       [7, { value: 7 }],
     ])(
-      'by only passing data without key `put(%p)`',
+      'by only passing data, without key `put(%p)`',
       async (input, expected) => {
         const data = await db.put(input);
         expect(data).toEqual(expect.objectContaining(expected));
+        const deleteRes = await db.delete(data.key);
+        expect(deleteRes).toBeNull();
       }
     );
 
@@ -69,6 +71,17 @@ describe('Test base', () => {
       ],
       ['hello, worlds', { value: 'hello, worlds' }],
       [7, { value: 7 }],
+    ])(
+      'by only passing data, without key `insert(%p)`',
+      async (input, expected) => {
+        const data = await db.insert(input);
+        expect(data).toEqual(expect.objectContaining(expected));
+        const deleteRes = await db.delete(data.key);
+        expect(deleteRes).toBeNull();
+      }
+    );
+
+    it.each([
       [
         {
           key: 'user-a',
@@ -96,10 +109,10 @@ describe('Test base', () => {
         },
       ],
     ])(
-      'by only passing data without key `insert(%p)`',
+      'by passing data and key in object itself `insert(%p)`',
       async (input, expected) => {
         const data = await db.insert(input);
-        expect(data).toEqual(expect.objectContaining(expected));
+        expect(data).toEqual(expected);
       }
     );
 
@@ -133,7 +146,7 @@ describe('Test base', () => {
     it.each([
       [
         [
-          { name: 'Beverly', hometown: 'Copernicus City', key: 'one' },
+          { name: 'Beverly', hometown: 'Copernicus City', key: 'cityInfo' },
           'dude',
           ['Namaskāra', 'marhabaan', 'hello', 'yeoboseyo'],
         ],
@@ -142,7 +155,7 @@ describe('Test base', () => {
             items: [
               {
                 hometown: 'Copernicus City',
-                key: 'one',
+                key: 'cityInfo',
                 name: 'Beverly',
               },
               {
@@ -158,6 +171,10 @@ describe('Test base', () => {
     ])('putMany items `putMany("%s")`', async (items, expected) => {
       const data = await db.putMany(items);
       expect(data).toMatchObject(expected);
+      data.processed.items.forEach(async (val) => {
+        const deleteRes = await db.delete(val.key);
+        expect(deleteRes).toBeNull();
+      });
     });
   });
 
@@ -197,6 +214,10 @@ describe('Test base', () => {
   describe('Base#delete', () => {
     it.each([
       ['one'],
+      ['two'],
+      ['three'],
+      ['four'],
+      ['my_abc'],
       ['this is some random key'],
       ['newKey'],
       ['my_abc2'],
