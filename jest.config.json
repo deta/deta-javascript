@@ -1,4 +1,6 @@
 {
   "verbose": true,
-  "errorOnDeprecated": true
+  "errorOnDeprecated": true,
+  "bail": true,
+  "globalSetup": "./scripts/jest/globalSetup.js"
 }
