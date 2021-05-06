@@ -421,6 +421,25 @@ describe('Test base', () => {
           },
         ],
       ],
+      [
+        [{ 'user_age?gt': 50 }, { hometown: 'Greenville' }],
+        [
+          {
+            key: 'key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      ],
     ])(
       'fetch data by using fetch query `fetch(%p)`',
       async (query, expected) => {
