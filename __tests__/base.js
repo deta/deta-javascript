@@ -271,6 +271,23 @@ describe('Test base', () => {
     });
   });
 
+  describe('Base#delete', () => {
+    it.each([
+      ['one'],
+      ['two'],
+      ['three'],
+      ['four'],
+      ['my_abc'],
+      ['this is some random key'],
+      ['newKey'],
+      ['my_abc2'],
+      ['user-a'],
+    ])('delete data by using key `delete("%s")`', async (key) => {
+      const data = await db.delete(key);
+      expect(data).toBeNull();
+    });
+  });
+
   describe('Base#fetch', () => {
     it.each([
       [
@@ -440,6 +457,25 @@ describe('Test base', () => {
           },
         ],
       ],
+      [
+        { 'user_age?ne': 51 },
+        [
+          {
+            key: 'key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      ],
     ])(
       'fetch data by using fetch query `fetch(%p)`',
       async (query, expected) => {
@@ -450,22 +486,12 @@ describe('Test base', () => {
   });
 
   describe('Base#delete', () => {
-    it.each([
-      ['one'],
-      ['two'],
-      ['three'],
-      ['four'],
-      ['my_abc'],
-      ['this is some random key'],
-      ['newKey'],
-      ['my_abc2'],
-      ['user-a'],
-      ['key-1'],
-      ['key-2'],
-      ['key-3'],
-    ])('delete data by using key `delete("%s")`', async (key) => {
-      const data = await db.delete(key);
-      expect(data).toBeNull();
-    });
+    it.each([['key-1'], ['key-2'], ['key-3']])(
+      'delete data by using key `delete("%s")`',
+      async (key) => {
+        const data = await db.delete(key);
+        expect(data).toBeNull();
+      }
+    );
   });
 });
