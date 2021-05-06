@@ -6,7 +6,8 @@
     "build": "tsc",
     "format": "prettier --write .",
     "lint": "eslint -c .eslintrc.js . --ext .ts",
-    "lint:fix": "eslint -c .eslintrc.js . --ext .ts --fix"
+    "lint:fix": "eslint -c .eslintrc.js . --ext .ts --fix",
+    "prepare": "husky install"
   },
   "husky": {
     "hooks": {
