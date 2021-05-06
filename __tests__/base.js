@@ -146,7 +146,7 @@ describe('Test base', () => {
     it.each([
       [
         [
-          { name: 'Beverly', hometown: 'Copernicus City', key: 'cityInfo' },
+          { name: 'Beverly', hometown: 'Copernicus City' },
           'dude',
           ['Namaskāra', 'marhabaan', 'hello', 'yeoboseyo'],
         ],
@@ -155,7 +155,6 @@ describe('Test base', () => {
             items: [
               {
                 hometown: 'Copernicus City',
-                key: 'cityInfo',
                 name: 'Beverly',
               },
               {
@@ -168,13 +167,74 @@ describe('Test base', () => {
           },
         },
       ],
-    ])('putMany items `putMany("%s")`', async (items, expected) => {
+    ])(
+      'putMany items, without key `putMany("%s")`',
+      async (items, expected) => {
+        const data = await db.putMany(items);
+        expect(data).toMatchObject(expected);
+        data.processed.items.forEach(async (val) => {
+          const deleteRes = await db.delete(val.key);
+          expect(deleteRes).toBeNull();
+        });
+      }
+    );
+
+    it.each([
+      [
+        [
+          {
+            key: 'key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+        {
+          processed: {
+            items: [
+              {
+                key: 'key-1',
+                name: 'Wesley',
+                user_age: 27,
+                hometown: 'San Francisco',
+                email: 'wesley@deta.sh',
+              },
+              {
+                key: 'key-2',
+                name: 'Beverly',
+                user_age: 51,
+                hometown: 'Copernicus City',
+                email: 'beverly@deta.sh',
+              },
+              {
+                key: 'key-3',
+                name: 'Kevin Garnett',
+                user_age: 43,
+                hometown: 'Greenville',
+                email: 'kevin@email.com',
+              },
+            ],
+          },
+        },
+      ],
+    ])('putMany items, with key `putMany("%s")`', async (items, expected) => {
       const data = await db.putMany(items);
       expect(data).toMatchObject(expected);
-      data.processed.items.forEach(async (val) => {
-        const deleteRes = await db.delete(val.key);
-        expect(deleteRes).toBeNull();
-      });
     });
   });
 
@@ -211,6 +271,165 @@ describe('Test base', () => {
     });
   });
 
+  describe('Base#fetch', () => {
+    it.each([
+      [
+        { 'user_age?lt': 30 },
+        [
+          {
+            key: 'key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+        ],
+      ],
+      [
+        { user_age: 27 },
+        [
+          {
+            key: 'key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+        ],
+      ],
+      [
+        { user_age: 27, name: 'Wesley' },
+        [
+          {
+            key: 'key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+        ],
+      ],
+      [
+        { 'user_age?gt': 27 },
+        [
+          {
+            key: 'key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      ],
+      [
+        { 'user_age?lte': 43 },
+        [
+          {
+            key: 'key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      ],
+      [
+        { 'user_age?gte': 43 },
+        [
+          {
+            key: 'key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      ],
+      [
+        { 'hometown?pfx': 'San' },
+        [
+          {
+            key: 'key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+        ],
+      ],
+      [
+        { 'user_age?r': [20, 45] },
+        [
+          {
+            key: 'key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      ],
+      [
+        { 'email?contains': '@email.com' },
+        [
+          {
+            key: 'key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      ],
+      [
+        { 'email?not_contains': '@deta.sh' },
+        [
+          {
+            key: 'key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      ],
+    ])(
+      'fetch data by using fetch query `fetch(%p)`',
+      async (query, expected) => {
+        const { value } = await db.fetch(query).next();
+        expect(value).toEqual(expected);
+      }
+    );
+  });
+
   describe('Base#delete', () => {
     it.each([
       ['one'],
@@ -222,6 +441,9 @@ describe('Test base', () => {
       ['newKey'],
       ['my_abc2'],
       ['user-a'],
+      ['key-1'],
+      ['key-2'],
+      ['key-3'],
     ])('delete data by using key `delete("%s")`', async (key) => {
       const data = await db.delete(key);
       expect(data).toBeNull();
