@@ -4,7 +4,20 @@
   "description": "Deta library for Javascript",
   "scripts": {
     "build": "tsc",
-    "lint": "eslint -c .eslintrc.js . --ext .ts --fix"
+    "format": "prettier --write .",
+    "lint": "eslint -c .eslintrc.js . --ext .ts",
+    "lint:fix": "eslint -c .eslintrc.js . --ext .ts --fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && git add ."
+    }
+  },
+  "lint-staged": {
+    "*.{ts,json,md}": [
+      "yarn lint:fix",
+      "yarn format"
+    ]
   },
   "main": "./dist/index.js",
   "author": "Deta",
@@ -30,6 +43,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-prettier": "^3.4.0",
+    "husky": "^6.0.0",
     "prettier": "^2.2.1",
     "typescript": "^4.2.4"
   }
