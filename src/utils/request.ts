@@ -61,4 +61,21 @@ export default class Requests {
       throw new Error(err);
     }
   }
+
+  /**
+   * get sends a HTTP get request
+   *
+   * @param {string} uri
+   * @returns {Promise<any>}
+   */
+  public async get(uri: string): Promise<any> {
+    try {
+      const { status, data } = await axios.get(uri, this.requestConfig);
+      return { status, response: data };
+    } catch (err) {
+      const { response } = err;
+      const { status, data } = response;
+      return { status, error: new Error(data) };
+    }
+  }
 }
