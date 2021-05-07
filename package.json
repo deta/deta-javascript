@@ -9,17 +9,6 @@
     "lint:fix": "eslint -c .eslintrc.js . --ext .ts --fix",
     "prepare": "husky install"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged && git add ."
-    }
-  },
-  "lint-staged": {
-    "*.{ts,json,md}": [
-      "yarn lint:fix",
-      "yarn format"
-    ]
-  },
   "main": "./dist/index.js",
   "author": "Deta",
   "license": "MIT",
