@@ -1,15 +1,22 @@
-import axios, { AxiosInstance, AxiosInterceptorManager } from 'axios';
+import fetch from 'node-fetch';
+
+interface Request {
+  body?: any;
+  method?: string;
+  baseURL?: string;
+  headers?: { [key: string]: string };
+}
 
 interface Response {
   status: number;
-  data: any;
+  response?: any;
   error?: Error;
 }
 
 export default class Requests {
   private host: string = 'https://database.deta.sh/v1/:project_id/:base_name';
 
-  private api: AxiosInstance;
+  private requestConfig: Request;
 
   /**
    * Requests constructor
@@ -24,29 +31,13 @@ export default class Requests {
       .replace(':project_id', projectId)
       .replace(':base_name', baseName);
 
-    this.api = axios.create({
+    this.requestConfig = {
       baseURL,
       headers: {
         'X-API-Key': projectKey,
         'Content-Type': 'application/json',
       },
-    });
-
-    const responseInterceptor: AxiosInterceptorManager<Response> = this.api
-      .interceptors.response;
-
-    responseInterceptor.use(
-      (response) => {
-        const { status, data } = response;
-        return { status, data };
-      },
-      (error) => {
-        const { response } = error;
-        const { status, data } = response;
-        const { errors } = data;
-        return { status, error: new Error(errors[0]) };
-      }
-    );
+    };
   }
 
   /**
@@ -57,6 +48,29 @@ export default class Requests {
    * @returns {Promise<Response>}
    */
   public put(uri: string, payload: any): Promise<Response> {
-    return this.api.put(uri, payload);
+    return Requests.fetch(uri, {
+      ...this.requestConfig,
+      body: payload,
+      method: 'put',
+    });
+  }
+
+  static async fetch(url: string, config: Request): Promise<Response> {
+    const response = await fetch(`${config.baseURL}${url}`, {
+      body: JSON.stringify(config.body),
+      method: config.method,
+      headers: config.headers,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        status: response.status,
+        error: new Error(data?.errors?.[0] || 'Something went wrong'),
+      };
+    }
+
+    return { status: response.status, response: data };
   }
 }
