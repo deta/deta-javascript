@@ -34,11 +34,18 @@ export default class Base {
       },
     ];
 
-    const { status, response } = await this.requests.put(api.PUT_ITEMS, {
-      items: payload,
-    });
+    const { status, data: response, error } = await this.requests.put(
+      api.PUT_ITEMS,
+      {
+        items: payload,
+      }
+    );
 
-    return (status === 207 && response?.processed?.items[0]) || null;
+    if (status !== 207 && error) {
+      throw error;
+    }
+
+    return response?.processed?.items[0];
   }
 
   public get() {}

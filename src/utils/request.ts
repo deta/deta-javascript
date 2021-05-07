@@ -1,9 +1,15 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { AxiosInstance, AxiosInterceptorManager } from 'axios';
+
+interface Response {
+  status: number;
+  data: any;
+  error?: Error;
+}
 
 export default class Requests {
   private host: string = 'https://database.deta.sh/v1/:project_id/:base_name';
 
-  private requestConfig: AxiosRequestConfig;
+  private api: AxiosInstance;
 
   /**
    * Requests constructor
@@ -18,13 +24,29 @@ export default class Requests {
       .replace(':project_id', projectId)
       .replace(':base_name', baseName);
 
-    this.requestConfig = {
+    this.api = axios.create({
       baseURL,
       headers: {
         'X-API-Key': projectKey,
         'Content-Type': 'application/json',
       },
-    };
+    });
+
+    const responseInterceptor: AxiosInterceptorManager<Response> = this.api
+      .interceptors.response;
+
+    responseInterceptor.use(
+      (response) => {
+        const { status, data } = response;
+        return { status, data };
+      },
+      (error) => {
+        const { response } = error;
+        const { status, data } = response;
+        const { errors } = data;
+        return { status, error: new Error(errors[0]) };
+      }
+    );
   }
 
   /**
@@ -32,19 +54,10 @@ export default class Requests {
    *
    * @param {string} uri
    * @param {any} payload
-   * @returns {Promise<any>}
+   * @returns {Promise<Response>}
    */
-  public async put(uri: string, payload: any): Promise<any> {
-    try {
-      const { status, data } = await axios.put(
-        uri,
-        payload,
-        this.requestConfig
-      );
-      return { status, response: data };
-    } catch (err) {
-      throw new Error(err);
-    }
+  public put(uri: string, payload: any): Promise<Response> {
+    return this.api.put(uri, payload);
   }
 
   /**
