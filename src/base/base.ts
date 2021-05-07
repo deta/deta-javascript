@@ -27,7 +27,7 @@ export default class Base {
     const payload: ObjectType[] = [
       {
         ...(isObject(data) ? (data as ObjectType) : { value: data }),
-        key,
+        ...(key && { key }),
       },
     ];
 
