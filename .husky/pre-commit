@@ -3,4 +3,5 @@
 
 yarn lint:fix
 yarn format
+yarn test
 git add .

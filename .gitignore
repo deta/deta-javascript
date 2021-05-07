@@ -40,6 +40,3 @@ build
 
 # ignore yarn.lock
 yarn.lock
-
-# Ignore examples files
-examples
