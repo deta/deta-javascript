@@ -64,9 +64,9 @@ export default class Requests {
    * delete sends a HTTP delete request
    *
    * @param {string} uri
-   * @returns {Promise<any>}
+   * @returns {Promise<Response>}
    */
-  public async delete(uri: string): Promise<any> {
+  public async delete(uri: string): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
       method: Method.Delete,
