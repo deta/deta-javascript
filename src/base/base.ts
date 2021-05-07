@@ -61,7 +61,12 @@ export default class Base {
 
     const encodedKey = encodeURIComponent(trimedKey);
 
-    await this.requests.delete(api.DELETE_ITEMS.replace(':key', encodedKey));
+    const { error } = await this.requests.delete(
+      api.DELETE_ITEMS.replace(':key', encodedKey)
+    );
+    if (error) {
+      throw error;
+    }
 
     return null;
   }
