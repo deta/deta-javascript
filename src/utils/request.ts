@@ -1,9 +1,27 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import fetch from 'node-fetch';
+
+interface Request {
+  body?: any;
+  method?: string;
+  baseURL?: string;
+  headers?: { [key: string]: string };
+}
+
+interface Response {
+  status: number;
+  response?: any;
+  error?: Error;
+}
+
+enum Method {
+  Put = 'put',
+  Delete = 'delete',
+}
 
 export default class Requests {
   private host: string = 'https://database.deta.sh/v1/:project_id/:base_name';
 
-  private requestConfig: AxiosRequestConfig;
+  private requestConfig: Request;
 
   /**
    * Requests constructor
@@ -32,34 +50,46 @@ export default class Requests {
    *
    * @param {string} uri
    * @param {any} payload
-   * @returns {Promise<any>}
+   * @returns {Promise<Response>}
    */
-  public async put(uri: string, payload: any): Promise<any> {
-    try {
-      const { status, data } = await axios.put(
-        uri,
-        payload,
-        this.requestConfig
-      );
-      return { status, response: data };
-    } catch (err) {
-      throw new Error(err);
-    }
+  public put(uri: string, payload: any): Promise<Response> {
+    return Requests.fetch(uri, {
+      ...this.requestConfig,
+      body: payload,
+      method: Method.Put,
+    });
   }
 
   /**
    * delete sends a HTTP delete request
    *
    * @param {string} uri
-   * @returns {Promise<any>}
+   * @returns {Promise<Response>}
    */
-  public async delete(uri: string): Promise<any> {
-    try {
-      const { status, data } = await axios.delete(uri, this.requestConfig);
-      return { status, response: data };
-    } catch (err) {
-      throw new Error(err);
+  public async delete(uri: string): Promise<Response> {
+    return Requests.fetch(uri, {
+      ...this.requestConfig,
+      method: Method.Delete,
+    });
+  }
+
+  static async fetch(url: string, config: Request): Promise<Response> {
+    const response = await fetch(`${config.baseURL}${url}`, {
+      body: JSON.stringify(config.body),
+      method: config.method,
+      headers: config.headers,
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        status: response.status,
+        error: new Error(data?.errors?.[0] || 'Something went wrong'),
+      };
     }
+
+    return { status: response.status, response: data };
   }
 
   /**

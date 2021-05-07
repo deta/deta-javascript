@@ -34,11 +34,14 @@ export default class Base {
       },
     ];
 
-    const { status, response } = await this.requests.put(api.PUT_ITEMS, {
+    const { response, error } = await this.requests.put(api.PUT_ITEMS, {
       items: payload,
     });
+    if (error) {
+      throw error;
+    }
 
-    return (status === 207 && response?.processed?.items[0]) || null;
+    return response?.processed?.items?.[0] || null;
   }
 
   /**
@@ -84,7 +87,12 @@ export default class Base {
 
     const encodedKey = encodeURIComponent(trimedKey);
 
-    await this.requests.delete(api.DELETE_ITEMS.replace(':key', encodedKey));
+    const { error } = await this.requests.delete(
+      api.DELETE_ITEMS.replace(':key', encodedKey)
+    );
+    if (error) {
+      throw error;
+    }
 
     return null;
   }
