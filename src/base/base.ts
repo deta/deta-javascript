@@ -23,7 +23,10 @@ export default class Base {
    * @param {string} [key]
    * @returns {Promise<DetaType | NullType>}
    */
-  public async put(data: DetaType, key?: string): Promise<DetaType | NullType> {
+  public async put(
+    data: DetaType,
+    key?: string
+  ): Promise<ObjectType | NullType> {
     const payload: ObjectType[] = [
       {
         ...(isObject(data) ? (data as ObjectType) : { value: data }),
