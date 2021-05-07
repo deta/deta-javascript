@@ -42,7 +42,7 @@ export default class Base {
       throw error;
     }
 
-    return response?.processed?.items[0];
+    return response?.processed?.items?.[0] || null;
   }
 
   public get() {}
