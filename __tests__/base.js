@@ -44,6 +44,16 @@ describe('Test base', () => {
       ['hello, worlds', 'three', { value: 'hello, worlds', key: 'three' }],
       [7, 'four', { value: 7, key: 'four' }],
       [['a', 'b', 'c'], 'my_abc', { value: ['a', 'b', 'c'], key: 'my_abc' }],
+      [
+        { key: 'hello', value: ['a', 'b', 'c'] },
+        'my_abc',
+        { value: ['a', 'b', 'c'], key: 'my_abc' },
+      ],
+      [
+        { key: 'hello', world: ['a', 'b', 'c'] },
+        'my_abc',
+        { world: ['a', 'b', 'c'], key: 'my_abc' },
+      ],
     ])(
       'by passing data as first parameter and key as second parameter `put(%p, "%s")`',
       async (value, key, expected) => {
