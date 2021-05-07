@@ -5,6 +5,12 @@ export default class Requests {
 
   private requestConfig: AxiosRequestConfig;
 
+  /**
+   * Requests constructor
+   *
+   * @param {string} projectKey
+   * @param {string} baseName
+   */
   constructor(projectKey: string, baseName: string) {
     const [projectId] = projectKey.split('_');
 
@@ -21,6 +27,13 @@ export default class Requests {
     };
   }
 
+  /**
+   * put sends a HTTP put request
+   *
+   * @param {string} uri
+   * @param {any} payload
+   * @returns {Promise<any>}
+   */
   public async put(uri: string, payload: any): Promise<any> {
     try {
       const { status, data } = await axios.put(

@@ -1,5 +1,11 @@
 import DetaClass from './deta';
 
+/**
+ * Deta returns instance of Deta class
+ *
+ * @param {string} projectKey
+ * @returns {DetaClass}
+ */
 export function Deta(projectKey: string): DetaClass {
   const key = projectKey.trim();
   if (!key) {

@@ -6,10 +6,23 @@ import { DetaType, NullType, ObjectType } from '../types/basic';
 export default class Base {
   private requests: Requests;
 
+  /**
+   * Base constructor
+   *
+   * @param {string} projectKey
+   * @param {string} baseName
+   */
   constructor(projectKey: string, baseName: string) {
     this.requests = new Requests(projectKey, baseName);
   }
 
+  /**
+   * put data on base
+   *
+   * @param {DetaType} data
+   * @param {string} [key]
+   * @returns {Promise<DetaType | NullType>}
+   */
   public async put(data: DetaType, key?: string): Promise<DetaType | NullType> {
     const payload: ObjectType[] = [
       {
