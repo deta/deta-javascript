@@ -16,6 +16,7 @@ interface Response {
 enum Method {
   Put = 'put',
   Delete = 'delete',
+  Get = 'get',
 }
 
 export default class Requests {
@@ -73,6 +74,19 @@ export default class Requests {
     });
   }
 
+  /**
+   * get sends a HTTP get request
+   *
+   * @param {string} uri
+   * @returns {Promise<Response>}
+   */
+  public async get(uri: string): Promise<Response> {
+    return Requests.fetch(uri, {
+      ...this.requestConfig,
+      method: Method.Get,
+    });
+  }
+
   static async fetch(url: string, config: Request): Promise<Response> {
     const response = await fetch(`${config.baseURL}${url}`, {
       body: JSON.stringify(config.body),
@@ -90,22 +104,5 @@ export default class Requests {
     }
 
     return { status: response.status, response: data };
-  }
-
-  /**
-   * get sends a HTTP get request
-   *
-   * @param {string} uri
-   * @returns {Promise<any>}
-   */
-  public async get(uri: string): Promise<any> {
-    try {
-      const { status, data } = await axios.get(uri, this.requestConfig);
-      return { status, response: data };
-    } catch (err) {
-      const { response } = err;
-      const { status, data } = response;
-      return { status, error: new Error(data) };
-    }
   }
 }
