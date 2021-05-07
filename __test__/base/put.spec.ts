@@ -19,25 +19,37 @@ describe('Base#put', () => {
   });
 
   it('by passing data and key in object itself', async () => {
-    const input = { name: 'alex', age: 77, key: 'one' };
+    const input = { name: 'alex', age: 77, key: 'put_one' };
     const data = await db.put(input);
     expect(data).toEqual(input);
   });
 
   it.each([
-    [{ name: 'alex', age: 77 }, 'two', { name: 'alex', age: 77, key: 'two' }],
-    ['hello, worlds', 'three', { value: 'hello, worlds', key: 'three' }],
-    [7, 'four', { value: 7, key: 'four' }],
-    [['a', 'b', 'c'], 'my_abc', { value: ['a', 'b', 'c'], key: 'my_abc' }],
     [
-      { key: 'hello', value: ['a', 'b', 'c'] },
-      'my_abc',
-      { value: ['a', 'b', 'c'], key: 'my_abc' },
+      { name: 'alex', age: 77 },
+      'put_two',
+      { name: 'alex', age: 77, key: 'put_two' },
     ],
     [
-      { key: 'hello', world: ['a', 'b', 'c'] },
-      'my_abc',
-      { world: ['a', 'b', 'c'], key: 'my_abc' },
+      'hello, worlds',
+      'put_three',
+      { value: 'hello, worlds', key: 'put_three' },
+    ],
+    [7, 'put_four', { value: 7, key: 'put_four' }],
+    [
+      ['a', 'b', 'c'],
+      'put_my_abc',
+      { value: ['a', 'b', 'c'], key: 'put_my_abc' },
+    ],
+    [
+      { key: 'put_hello', value: ['a', 'b', 'c'] },
+      'put_my_abc',
+      { value: ['a', 'b', 'c'], key: 'put_my_abc' },
+    ],
+    [
+      { key: 'put_hello', world: ['a', 'b', 'c'] },
+      'put_my_abc',
+      { world: ['a', 'b', 'c'], key: 'put_my_abc' },
     ],
   ])(
     'by passing data as first parameter and key as second parameter `put(%p, "%s")`',
