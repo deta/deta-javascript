@@ -16,12 +16,16 @@ describe('Base#put', () => {
   ])('by only passing data, without key `put(%p)`', async (input, expected) => {
     const data = await db.put(input);
     expect(data).toEqual(expect.objectContaining(expected));
+    const deleteRes = await db.delete(data?.key as string);
+    expect(deleteRes).toBeNull();
   });
 
   it('by passing data and key in object itself', async () => {
     const input = { name: 'alex', age: 77, key: 'one' };
     const data = await db.put(input);
     expect(data).toEqual(input);
+    const deleteRes = await db.delete(data?.key as string);
+    expect(deleteRes).toBeNull();
   });
 
   it.each([
@@ -44,6 +48,8 @@ describe('Base#put', () => {
     async (value, key, expected) => {
       const data = await db.put(value, key);
       expect(data).toEqual(expected);
+      const deleteRes = await db.delete(data?.key as string);
+      expect(deleteRes).toBeNull();
     }
   );
 });

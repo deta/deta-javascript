@@ -46,4 +46,19 @@ export default class Requests {
       throw new Error(err);
     }
   }
+
+  /**
+   * delete sends a HTTP delete request
+   *
+   * @param {string} uri
+   * @returns {Promise<any>}
+   */
+  public async delete(uri: string): Promise<any> {
+    try {
+      const { status, data } = await axios.delete(uri, this.requestConfig);
+      return { status, response: data };
+    } catch (err) {
+      throw new Error(err);
+    }
+  }
 }

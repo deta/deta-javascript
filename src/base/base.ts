@@ -23,7 +23,10 @@ export default class Base {
    * @param {string} [key]
    * @returns {Promise<DetaType | NullType>}
    */
-  public async put(data: DetaType, key?: string): Promise<DetaType | NullType> {
+  public async put(
+    data: DetaType,
+    key?: string
+  ): Promise<ObjectType | NullType> {
     const payload: ObjectType[] = [
       {
         ...(isObject(data) ? (data as ObjectType) : { value: data }),
@@ -40,7 +43,24 @@ export default class Base {
 
   public get() {}
 
-  public delete() {}
+  /**
+   * delete data on base
+   *
+   * @param {string} key
+   * @returns {Promise<NullType>}
+   */
+  public async delete(key: string): Promise<NullType> {
+    const trimedKey = key.trim();
+    if (!trimedKey.length) {
+      throw new Error('Key is empty');
+    }
+
+    const encodedKey = encodeURIComponent(trimedKey);
+
+    await this.requests.delete(api.DELETE_ITEMS.replace(':key', encodedKey));
+
+    return null;
+  }
 
   public insert() {}
 
