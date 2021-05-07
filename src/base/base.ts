@@ -21,7 +21,7 @@ export default class Base {
    *
    * @param {DetaType} data
    * @param {string} [key]
-   * @returns {Promise<DetaType | NullType>}
+   * @returns {Promise<ObjectType | NullType>}
    */
   public async put(
     data: DetaType,
