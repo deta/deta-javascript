@@ -1,20 +1,18 @@
+import BaseUtils from './utils';
 import api from '../constants/api';
 import Requests from '../utils/request';
 import { isObject } from '../utils/object';
-import BaseUtils from './utils';
+import { Action, ActionTypes } from '../types/action';
+import { DetaType, ArrayType, ObjectType } from '../types/basic';
+
 import {
-  DetaType,
-  ObjectType,
   GetResponse,
   PutResponse,
   DeleteResponse,
   InsertResponse,
   UpdateResponse,
   PutManyResponse,
-  ArrayType,
-  Action,
-  ActionTypes,
-} from '../types/basic';
+} from '../types/response';
 
 export default class Base {
   private requests: Requests;
