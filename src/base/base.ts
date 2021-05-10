@@ -1,6 +1,7 @@
 import api from '../constants/api';
 import Requests from '../utils/request';
 import { isObject } from '../utils/object';
+import BaseUtils from './utils';
 import {
   DetaType,
   ObjectType,
@@ -8,11 +9,17 @@ import {
   PutResponse,
   DeleteResponse,
   InsertResponse,
+  UpdateResponse,
   PutManyResponse,
+  ArrayType,
+  Action,
+  ActionTypes,
 } from '../types/basic';
 
 export default class Base {
   private requests: Requests;
+
+  public util: BaseUtils;
 
   /**
    * Base constructor
@@ -22,6 +29,7 @@ export default class Base {
    */
   constructor(projectKey: string, baseName: string) {
     this.requests = new Requests(projectKey, baseName);
+    this.util = new BaseUtils();
   }
 
   /**
@@ -160,7 +168,65 @@ export default class Base {
     return response;
   }
 
-  public update() {}
+  /**
+   * update data on base
+   *
+   * @param {ObjectType} updates
+   * @param {string} key
+   * @returns {Promise<UpdateResponse>}
+   */
+  public async update(
+    updates: ObjectType,
+    key: string
+  ): Promise<UpdateResponse> {
+    const trimedKey = key.trim();
+    if (!trimedKey.length) {
+      throw new Error('Key is empty');
+    }
+
+    const payload: {
+      set: ObjectType;
+      increment: ObjectType;
+      append: ObjectType;
+      prepend: ObjectType;
+      delete: ArrayType;
+    } = {
+      set: {},
+      increment: {},
+      append: {},
+      prepend: {},
+      delete: [],
+    };
+
+    Object.entries(updates).forEach(([objKey, objValue]) => {
+      const action =
+        objValue instanceof Action
+          ? objValue
+          : new Action(ActionTypes.Set, objValue);
+
+      const { operation, value } = action;
+      switch (operation) {
+        case ActionTypes.Trim: {
+          payload.delete.push(objKey);
+          break;
+        }
+        default: {
+          payload[operation][objKey] = value;
+        }
+      }
+    });
+
+    const encodedKey = encodeURIComponent(trimedKey);
+    const { error } = await this.requests.patch(
+      api.PATCH_ITEMS.replace(':key', encodedKey),
+      payload
+    );
+    if (error) {
+      throw error;
+    }
+
+    return null;
+  }
 
   public fetch() {}
 }

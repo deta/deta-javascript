@@ -15,9 +15,10 @@ interface Response {
 
 enum Method {
   Put = 'put',
-  Delete = 'delete',
   Get = 'get',
   Post = 'post',
+  Patch = 'patch',
+  Delete = 'delete',
 }
 
 export default class Requests {
@@ -100,6 +101,21 @@ export default class Requests {
       ...this.requestConfig,
       body: payload,
       method: Method.Post,
+    });
+  }
+
+  /**
+   * patch sends a HTTP patch request
+   *
+   * @param {string} uri
+   * @param {any} payload
+   * @returns {Promise<Response>}
+   */
+  public patch(uri: string, payload: any): Promise<Response> {
+    return Requests.fetch(uri, {
+      ...this.requestConfig,
+      body: payload,
+      method: Method.Patch,
     });
   }
 
