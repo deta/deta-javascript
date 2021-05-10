@@ -23,6 +23,18 @@ describe('Base#get', () => {
     await Promise.all(promises);
   });
 
+  afterAll(async () => {
+    const inputs = [['get_one']];
+
+    const promises = inputs.map(async (input) => {
+      const [key] = input;
+      const data = await db.delete(key);
+      expect(data).toBeNull();
+    });
+
+    await Promise.all(promises);
+  });
+
   it.each([
     ['get_one', { name: 'alex', age: 77, key: 'get_one' }],
     ['this is some random key', null],
