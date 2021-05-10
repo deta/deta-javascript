@@ -45,6 +45,18 @@ describe('Base#update', () => {
     await Promise.all(promises);
   });
 
+  afterAll(async () => {
+    const inputs = [['update-user-a']];
+
+    const promises = inputs.map(async (input) => {
+      const [key] = input;
+      const data = await db.delete(key);
+      expect(data).toBeNull();
+    });
+
+    await Promise.all(promises);
+  });
+
   it.each([
     [
       {
