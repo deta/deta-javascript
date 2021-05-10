@@ -135,7 +135,7 @@ export default class Base {
    * putMany data on base
    *
    * @param {DetaType} items
-   * @returns {Promise<ObjectType>}
+   * @returns {Promise<PutManyResponse>}
    */
   public async putMany(items: DetaType[]): Promise<PutManyResponse> {
     if (!(items instanceof Array)) {
