@@ -114,21 +114,33 @@ export default class Requests {
   }
 
   static async fetch(url: string, config: Request): Promise<Response> {
-    const response = await fetch(`${config.baseURL}${url}`, {
-      body: JSON.stringify(config.body),
-      method: config.method,
-      headers: config.headers,
-    });
+    try {
+      const response = await fetch(`${config.baseURL}${url}`, {
+        body: JSON.stringify(config.body),
+        method: config.method,
+        headers: config.headers,
+      });
 
-    const data = await response.json();
+      let data: any;
 
-    if (!response.ok) {
-      return {
-        status: response.status,
-        error: new Error(data?.errors?.[0] || 'Something went wrong'),
-      };
+      // check if the response is json
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        data = await response.buffer();
+      }
+
+      if (!response.ok) {
+        return {
+          status: response.status,
+          error: new Error(data?.errors?.[0] || 'Something went wrong'),
+        };
+      }
+
+      return { status: response.status, response: data };
+    } catch (err) {
+      return { status: 500, error: new Error('Something went wrong') };
     }
-
-    return { status: response.status, response: data };
   }
 }

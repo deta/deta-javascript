@@ -1,4 +1,4 @@
-import { NullType, ObjectType, ArrayType } from './basic';
+import { NullType, ObjectType, ArrayType } from '../basic';
 
 export type DeleteResponse = NullType;
 

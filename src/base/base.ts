@@ -1,7 +1,7 @@
 import BaseUtils from './utils';
-import api from '../constants/api';
 import url from '../constants/url';
 import Requests from '../utils/request';
+import { BaseApi } from '../constants/api';
 import { isObject } from '../utils/object';
 import { Action, ActionTypes } from '../types/action';
 import { DetaType, ArrayType, ObjectType } from '../types/basic';
@@ -13,7 +13,7 @@ import {
   InsertResponse,
   UpdateResponse,
   PutManyResponse,
-} from '../types/response';
+} from '../types/base/response';
 
 export default class Base {
   private requests: Requests;
@@ -47,7 +47,7 @@ export default class Base {
       },
     ];
 
-    const { response, error } = await this.requests.put(api.PUT_ITEMS, {
+    const { response, error } = await this.requests.put(BaseApi.PUT_ITEMS, {
       items: payload,
     });
     if (error) {
@@ -72,7 +72,7 @@ export default class Base {
     const encodedKey = encodeURIComponent(trimedKey);
 
     const { status, response, error } = await this.requests.get(
-      api.GET_ITEMS.replace(':key', encodedKey)
+      BaseApi.GET_ITEMS.replace(':key', encodedKey)
     );
 
     if (error && status !== 404) {
@@ -101,7 +101,7 @@ export default class Base {
     const encodedKey = encodeURIComponent(trimedKey);
 
     const { error } = await this.requests.delete(
-      api.DELETE_ITEMS.replace(':key', encodedKey)
+      BaseApi.DELETE_ITEMS.replace(':key', encodedKey)
     );
     if (error) {
       throw error;
@@ -124,7 +124,7 @@ export default class Base {
     };
 
     const { status, response, error } = await this.requests.post(
-      api.INSERT_ITEMS,
+      BaseApi.INSERT_ITEMS,
       {
         item: payload,
       }
@@ -158,7 +158,7 @@ export default class Base {
       isObject(item) ? (item as ObjectType) : { value: item }
     );
 
-    const { response, error } = await this.requests.put(api.PUT_ITEMS, {
+    const { response, error } = await this.requests.put(BaseApi.PUT_ITEMS, {
       items: payload,
     });
     if (error) {
@@ -218,7 +218,7 @@ export default class Base {
 
     const encodedKey = encodeURIComponent(trimedKey);
     const { error } = await this.requests.patch(
-      api.PATCH_ITEMS.replace(':key', encodedKey),
+      BaseApi.PATCH_ITEMS.replace(':key', encodedKey),
       payload
     );
     if (error) {
@@ -252,7 +252,7 @@ export default class Base {
       };
 
       const { response, error } = await this.requests.post(
-        api.QUERY_ITEMS,
+        BaseApi.QUERY_ITEMS,
         payload
       );
       if (error) {
