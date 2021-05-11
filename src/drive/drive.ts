@@ -2,7 +2,11 @@ import url from '../constants/url';
 import Requests from '../utils/request';
 import { DriveApi } from '../constants/api';
 import { ObjectType } from '../types/basic';
-import { GetResponse, DeleteResponse } from '../types/drive/response';
+import {
+  GetResponse,
+  DeleteResponse,
+  DeleteManyResponse,
+} from '../types/drive/response';
 
 export default class Drive {
   private requests: Requests;
@@ -71,5 +75,40 @@ export default class Drive {
     }
 
     return response?.deleted?.[0] || name;
+  }
+
+  /**
+   * deleteMany data from drive
+   *
+   * @param {string[]} names
+   * @returns {Promise<DeleteManyResponse>}
+   */
+  public async deleteMany(names: string[]): Promise<DeleteManyResponse> {
+    if (!names.length) {
+      throw new Error("Names can't be empty");
+    }
+
+    if (names.length > 1000) {
+      throw new Error("We can't delete more than 1000 items at a time");
+    }
+
+    const payload: ObjectType = {
+      names,
+    };
+
+    const { status, response, error } = await this.requests.delete(
+      DriveApi.DELETE_FILES,
+      payload
+    );
+
+    if (status === 400 && error) {
+      throw new Error("Names can't be empty");
+    }
+
+    if (error) {
+      throw error;
+    }
+
+    return response;
   }
 }
