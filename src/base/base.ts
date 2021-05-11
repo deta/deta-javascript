@@ -9,6 +9,7 @@ import { DetaType, ArrayType, ObjectType } from '../types/basic';
 import {
   GetResponse,
   PutResponse,
+  FetchResponse,
   DeleteResponse,
   InsertResponse,
   UpdateResponse,
@@ -234,13 +235,13 @@ export default class Base {
    * @param {DetaType} [query]
    * @param {number} [pages]
    * @param {number} [buffer]
-   * @returns {Promise<UpdateResponse>}
+   * @returns {FetchResponse}
    */
   public async *fetch(
     query: DetaType = [],
     pages: number = 10,
     buffer?: number
-  ): AsyncGenerator<ObjectType[], void, void> {
+  ): FetchResponse {
     let lastValue = '';
     const q = Array.isArray(query) ? query : [query];
 

@@ -6,7 +6,7 @@ const driveName = process.env.DRIVE_NAME || '';
 const drive = Deta(projectKey).Drive(driveName);
 
 describe.only('Drive#deleteMany', () => {
-  it('deleteMany data by using names', async () => {
+  it('deleteMany files by using names', async () => {
     const names = ['delete-many-a.png'];
     const expected = {
       deleted: ['delete-many-a.png'],
@@ -15,7 +15,7 @@ describe.only('Drive#deleteMany', () => {
     expect(data).toEqual(expected);
   });
 
-  it('deleteMany data by using names that does not exists on drive', async () => {
+  it('deleteMany files by using names that does not exists on drive', async () => {
     const names = ['delete-many-aa.png'];
     const expected = {
       deleted: ['delete-many-aa.png'],
@@ -24,7 +24,7 @@ describe.only('Drive#deleteMany', () => {
     expect(data).toEqual(expected);
   });
 
-  it('deleteMany data by using valid and invalid names', async () => {
+  it('deleteMany files by using valid and invalid names', async () => {
     const names = ['delete-many-aa.png', '', '  '];
     const expected = {
       deleted: ['delete-many-aa.png'],
@@ -46,7 +46,7 @@ describe.only('Drive#deleteMany', () => {
       new Error("We can't delete more than 1000 items at a time"),
     ],
   ])(
-    'deleteMany data by using invalid name `deleteMany(%s)`',
+    'deleteMany files by using invalid name `deleteMany(%s)`',
     async (names, expected) => {
       try {
         const data = await drive.deleteMany(names);

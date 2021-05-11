@@ -2,8 +2,10 @@ import url from '../constants/url';
 import Requests from '../utils/request';
 import { DriveApi } from '../constants/api';
 import { ObjectType } from '../types/basic';
+
 import {
   GetResponse,
+  ListResponse,
   DeleteResponse,
   DeleteManyResponse,
 } from '../types/drive/response';
@@ -23,7 +25,7 @@ export default class Drive {
   }
 
   /**
-   * get data from drive
+   * get file from drive
    *
    * @param {string} name
    * @returns {Promise<GetResponse>}
@@ -51,7 +53,7 @@ export default class Drive {
   }
 
   /**
-   * delete data from drive
+   * delete file from drive
    *
    * @param {string} name
    * @returns {Promise<DeleteResponse>}
@@ -78,7 +80,7 @@ export default class Drive {
   }
 
   /**
-   * deleteMany data from drive
+   * deleteMany file from drive
    *
    * @param {string[]} names
    * @returns {Promise<DeleteManyResponse>}
@@ -110,5 +112,37 @@ export default class Drive {
     }
 
     return response;
+  }
+
+  /**
+   * list files from drive
+   *
+   * @param {number} [limit]
+   * @param {string} [prefix]
+   * @returns {ListResponse}
+   */
+  public async *list(limit: number = 1000, prefix: string = ''): ListResponse {
+    const uri = DriveApi.LIST_FILES.replace(':prefix', prefix);
+
+    let lastValue = '';
+
+    while (true) {
+      const finalUrl = uri
+        .replace(':limit', limit.toString())
+        .replace(':last', lastValue);
+
+      const { response, error } = await this.requests.get(finalUrl);
+      if (error) {
+        throw error;
+      }
+
+      yield response.names;
+
+      lastValue = response?.paging?.last;
+
+      if (!lastValue) {
+        break;
+      }
+    }
   }
 }
