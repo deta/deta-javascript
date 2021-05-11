@@ -1,4 +1,5 @@
-import { ArrayType, BasicType, Action, ActionTypes } from '../types/basic';
+import { Action, ActionTypes } from '../types/action';
+import { ArrayType, BasicType } from '../types/basic';
 
 export default class BaseUtils {
   public trim(): Action {

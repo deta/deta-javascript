@@ -1,21 +1,19 @@
+import BaseUtils from './utils';
 import api from '../constants/api';
 import url from '../constants/url';
 import Requests from '../utils/request';
 import { isObject } from '../utils/object';
-import BaseUtils from './utils';
+import { Action, ActionTypes } from '../types/action';
+import { DetaType, ArrayType, ObjectType } from '../types/basic';
+
 import {
-  DetaType,
-  ObjectType,
   GetResponse,
   PutResponse,
   DeleteResponse,
   InsertResponse,
   UpdateResponse,
   PutManyResponse,
-  ArrayType,
-  Action,
-  ActionTypes,
-} from '../types/basic';
+} from '../types/response';
 
 export default class Base {
   private requests: Requests;
@@ -144,7 +142,7 @@ export default class Base {
   /**
    * putMany data on base
    *
-   * @param {DetaType} items
+   * @param {DetaType[]} items
    * @returns {Promise<PutManyResponse>}
    */
   public async putMany(items: DetaType[]): Promise<PutManyResponse> {
@@ -230,5 +228,47 @@ export default class Base {
     return null;
   }
 
-  public fetch() {}
+  /**
+   * fetch data from base
+   *
+   * @param {DetaType} [query]
+   * @param {number} [pages]
+   * @param {number} [buffer]
+   * @returns {Promise<UpdateResponse>}
+   */
+  public async *fetch(
+    query: DetaType = [],
+    pages: number = 10,
+    buffer?: number
+  ): AsyncGenerator<ObjectType[], void, void> {
+    let lastValue = '';
+    const q = Array.isArray(query) ? query : [query];
+
+    for (let idx = 0; idx < pages; idx += 1) {
+      const payload = {
+        query: q,
+        limit: buffer,
+        last: lastValue,
+      };
+
+      const { response, error } = await this.requests.post(
+        api.QUERY_ITEMS,
+        payload
+      );
+      if (error) {
+        throw error;
+      }
+
+      const { paging, items } = response;
+      const { last } = paging;
+
+      yield items;
+
+      lastValue = last;
+
+      if (!lastValue) {
+        break;
+      }
+    }
+  }
 }

@@ -7,7 +7,7 @@
     "format": "prettier --write .",
     "lint": "eslint -c .eslintrc.js . --ext .ts",
     "lint:fix": "eslint -c .eslintrc.js . --ext .ts --fix",
-    "test": "jest --config jest.config.json",
+    "test": "jest --config jest.config.json --runInBand",
     "prepare": "husky install"
   },
   "main": "./dist/index.js",
