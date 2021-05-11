@@ -46,7 +46,34 @@ export default class Base {
     return response?.processed?.items?.[0] || null;
   }
 
-  public get() {}
+  /**
+   * get data from base
+   *
+   * @param {string} key
+   * @returns {Promise<ObjectType | NullType>}
+   */
+  public async get(key: string): Promise<ObjectType | NullType> {
+    const trimedKey = key.trim();
+    if (!trimedKey.length) {
+      throw new Error('Key is empty');
+    }
+
+    const encodedKey = encodeURIComponent(trimedKey);
+
+    const { status, response, error } = await this.requests.get(
+      api.GET_ITEMS.replace(':key', encodedKey)
+    );
+
+    if (error && status !== 404) {
+      throw error;
+    }
+
+    if (status === 200) {
+      return response;
+    }
+
+    return null;
+  }
 
   /**
    * delete data on base

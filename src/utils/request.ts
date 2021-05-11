@@ -16,6 +16,7 @@ interface Response {
 enum Method {
   Put = 'put',
   Delete = 'delete',
+  Get = 'get',
 }
 
 export default class Requests {
@@ -64,6 +65,19 @@ export default class Requests {
     return Requests.fetch(uri, {
       ...this.requestConfig,
       method: Method.Delete,
+    });
+  }
+
+  /**
+   * get sends a HTTP get request
+   *
+   * @param {string} uri
+   * @returns {Promise<Response>}
+   */
+  public async get(uri: string): Promise<Response> {
+    return Requests.fetch(uri, {
+      ...this.requestConfig,
+      method: Method.Get,
     });
   }
 
