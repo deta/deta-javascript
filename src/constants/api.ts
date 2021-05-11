@@ -9,4 +9,5 @@ export const BaseApi = {
 
 export const DriveApi = {
   GET_FILE: '/files/download?name=:name',
+  DELETE_FILES: '/files',
 };

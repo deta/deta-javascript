@@ -1,7 +1,8 @@
 import url from '../constants/url';
 import Requests from '../utils/request';
 import { DriveApi } from '../constants/api';
-import { GetResponse } from '../types/drive/response';
+import { ObjectType } from '../types/basic';
+import { GetResponse, DeleteResponse } from '../types/drive/response';
 
 export default class Drive {
   private requests: Requests;
@@ -43,5 +44,32 @@ export default class Drive {
     }
 
     return response;
+  }
+
+  /**
+   * delete data from drive
+   *
+   * @param {string} name
+   * @returns {Promise<DeleteResponse>}
+   */
+  public async delete(name: string): Promise<DeleteResponse> {
+    const trimedName = name.trim();
+    if (!trimedName.length) {
+      throw new Error('Name is empty');
+    }
+
+    const payload: ObjectType = {
+      names: [name],
+    };
+
+    const { response, error } = await this.requests.delete(
+      DriveApi.DELETE_FILES,
+      payload
+    );
+    if (error) {
+      throw error;
+    }
+
+    return response?.deleted?.[0] || name;
   }
 }
