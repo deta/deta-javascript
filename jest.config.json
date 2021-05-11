@@ -1,0 +1,8 @@
+{
+  "verbose": true,
+  "errorOnDeprecated": true,
+  "bail": true,
+  "globalSetup": "./scripts/jest/globalSetup.ts",
+  "preset": "ts-jest",
+  "modulePathIgnorePatterns": ["build", "node_modules"]
+}
