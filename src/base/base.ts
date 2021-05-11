@@ -1,4 +1,5 @@
 import api from '../constants/api';
+import url from '../constants/url';
 import Requests from '../utils/request';
 import { isObject } from '../utils/object';
 import {
@@ -21,7 +22,8 @@ export default class Base {
    * @param {string} baseName
    */
   constructor(projectKey: string, baseName: string) {
-    this.requests = new Requests(projectKey, baseName);
+    const baseURL = url.BASE_HOST_URL.replace(':base_name', baseName);
+    this.requests = new Requests(projectKey, baseURL);
   }
 
   /**
