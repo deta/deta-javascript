@@ -99,7 +99,34 @@ export default class Base {
     return null;
   }
 
-  public insert() {}
+  /**
+   * insert data on base
+   *
+   * @param {DetaType} data
+   * @param {string} [key]
+   * @returns {Promise<ObjectType>}
+   */
+  public async insert(data: DetaType, key?: string): Promise<ObjectType> {
+    const payload: ObjectType = {
+      ...(isObject(data) ? (data as ObjectType) : { value: data }),
+      ...(key && { key }),
+    };
+
+    const { status, response, error } = await this.requests.post(
+      api.INSERT_ITEMS,
+      {
+        item: payload,
+      }
+    );
+    if (error && status === 409) {
+      throw new Error(`Item with key ${key} already exists`);
+    }
+    if (error) {
+      throw error;
+    }
+
+    return response;
+  }
 
   public putMany() {}
 

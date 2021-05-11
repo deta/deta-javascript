@@ -17,6 +17,7 @@ enum Method {
   Put = 'put',
   Delete = 'delete',
   Get = 'get',
+  Post = 'post',
 }
 
 export default class Requests {
@@ -78,6 +79,21 @@ export default class Requests {
     return Requests.fetch(uri, {
       ...this.requestConfig,
       method: Method.Get,
+    });
+  }
+
+  /**
+   * post sends a HTTP post request
+   *
+   * @param {string} uri
+   * @param {any} payload
+   * @returns {Promise<Response>}
+   */
+  public post(uri: string, payload: any): Promise<Response> {
+    return Requests.fetch(uri, {
+      ...this.requestConfig,
+      body: payload,
+      method: Method.Post,
     });
   }
 
