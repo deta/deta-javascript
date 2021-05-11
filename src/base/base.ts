@@ -2,7 +2,15 @@ import api from '../constants/api';
 import url from '../constants/url';
 import Requests from '../utils/request';
 import { isObject } from '../utils/object';
-import { DetaType, NullType, ObjectType } from '../types/basic';
+import {
+  DetaType,
+  ObjectType,
+  GetResponse,
+  PutResponse,
+  DeleteResponse,
+  InsertResponse,
+  PutManyResponse,
+} from '../types/basic';
 
 export default class Base {
   private requests: Requests;
@@ -23,12 +31,9 @@ export default class Base {
    *
    * @param {DetaType} data
    * @param {string} [key]
-   * @returns {Promise<ObjectType | NullType>}
+   * @returns {Promise<PutResponse>}
    */
-  public async put(
-    data: DetaType,
-    key?: string
-  ): Promise<ObjectType | NullType> {
+  public async put(data: DetaType, key?: string): Promise<PutResponse> {
     const payload: ObjectType[] = [
       {
         ...(isObject(data) ? (data as ObjectType) : { value: data }),
@@ -50,9 +55,9 @@ export default class Base {
    * get data from base
    *
    * @param {string} key
-   * @returns {Promise<ObjectType | NullType>}
+   * @returns {Promise<GetResponse>}
    */
-  public async get(key: string): Promise<ObjectType | NullType> {
+  public async get(key: string): Promise<GetResponse> {
     const trimedKey = key.trim();
     if (!trimedKey.length) {
       throw new Error('Key is empty');
@@ -79,9 +84,9 @@ export default class Base {
    * delete data on base
    *
    * @param {string} key
-   * @returns {Promise<NullType>}
+   * @returns {Promise<DeleteResponse>}
    */
-  public async delete(key: string): Promise<NullType> {
+  public async delete(key: string): Promise<DeleteResponse> {
     const trimedKey = key.trim();
     if (!trimedKey.length) {
       throw new Error('Key is empty');
@@ -104,9 +109,9 @@ export default class Base {
    *
    * @param {DetaType} data
    * @param {string} [key]
-   * @returns {Promise<ObjectType>}
+   * @returns {Promise<InsertResponse>}
    */
-  public async insert(data: DetaType, key?: string): Promise<ObjectType> {
+  public async insert(data: DetaType, key?: string): Promise<InsertResponse> {
     const payload: ObjectType = {
       ...(isObject(data) ? (data as ObjectType) : { value: data }),
       ...(key && { key }),
@@ -128,7 +133,34 @@ export default class Base {
     return response;
   }
 
-  public putMany() {}
+  /**
+   * putMany data on base
+   *
+   * @param {DetaType} items
+   * @returns {Promise<PutManyResponse>}
+   */
+  public async putMany(items: DetaType[]): Promise<PutManyResponse> {
+    if (!(items instanceof Array)) {
+      throw new Error('Items must be an array');
+    }
+
+    if (items.length > 25) {
+      throw new Error("We can't put more than 25 items at a time");
+    }
+
+    const payload: ObjectType[] = items.map((item) =>
+      isObject(item) ? (item as ObjectType) : { value: item }
+    );
+
+    const { response, error } = await this.requests.put(api.PUT_ITEMS, {
+      items: payload,
+    });
+    if (error) {
+      throw error;
+    }
+
+    return response;
+  }
 
   public update() {}
 
