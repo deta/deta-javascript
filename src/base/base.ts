@@ -48,7 +48,29 @@ export default class Base {
 
   public get() {}
 
-  public delete() {}
+  /**
+   * delete data on base
+   *
+   * @param {string} key
+   * @returns {Promise<NullType>}
+   */
+  public async delete(key: string): Promise<NullType> {
+    const trimedKey = key.trim();
+    if (!trimedKey.length) {
+      throw new Error('Key is empty');
+    }
+
+    const encodedKey = encodeURIComponent(trimedKey);
+
+    const { error } = await this.requests.delete(
+      api.DELETE_ITEMS.replace(':key', encodedKey)
+    );
+    if (error) {
+      throw error;
+    }
+
+    return null;
+  }
 
   public insert() {}
 

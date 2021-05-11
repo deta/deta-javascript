@@ -13,6 +13,11 @@ interface Response {
   error?: Error;
 }
 
+enum Method {
+  Put = 'put',
+  Delete = 'delete',
+}
+
 export default class Requests {
   private requestConfig: Request;
 
@@ -45,7 +50,20 @@ export default class Requests {
     return Requests.fetch(uri, {
       ...this.requestConfig,
       body: payload,
-      method: 'put',
+      method: Method.Put,
+    });
+  }
+
+  /**
+   * delete sends a HTTP delete request
+   *
+   * @param {string} uri
+   * @returns {Promise<Response>}
+   */
+  public async delete(uri: string): Promise<Response> {
+    return Requests.fetch(uri, {
+      ...this.requestConfig,
+      method: Method.Delete,
     });
   }
 
