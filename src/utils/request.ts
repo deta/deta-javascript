@@ -14,25 +14,19 @@ interface Response {
 }
 
 export default class Requests {
-  private host: string = 'https://database.deta.sh/v1/:project_id/:base_name';
-
   private requestConfig: Request;
 
   /**
    * Requests constructor
    *
    * @param {string} projectKey
-   * @param {string} baseName
+   * @param {string} baseURL
    */
-  constructor(projectKey: string, baseName: string) {
+  constructor(projectKey: string, baseURL: string) {
     const [projectId] = projectKey.split('_');
 
-    const baseURL = this.host
-      .replace(':project_id', projectId)
-      .replace(':base_name', baseName);
-
     this.requestConfig = {
-      baseURL,
+      baseURL: baseURL.replace(':project_id', projectId),
       headers: {
         'X-API-Key': projectKey,
         'Content-Type': 'application/json',
