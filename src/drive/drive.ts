@@ -1,11 +1,17 @@
+import { promises as fs } from 'fs';
+
 import url from '../constants/url';
 import Requests from '../utils/request';
+import { isString } from '../utils/string';
 import { DriveApi } from '../constants/api';
 import { ObjectType } from '../types/basic';
+import { PutOptions, ListOptions } from '../types/drive/request';
 
 import {
   GetResponse,
+  PutResponse,
   ListResponse,
+  UploadResponse,
   DeleteResponse,
   DeleteManyResponse,
 } from '../types/drive/response';
@@ -117,32 +123,125 @@ export default class Drive {
   /**
    * list files from drive
    *
-   * @param {number} [limit]
-   * @param {string} [prefix]
-   * @returns {ListResponse}
+   * @param {ListOptions} [options]
+   * @returns {Promise<ListResponse>}
    */
-  public async *list(limit: number = 1000, prefix: string = ''): ListResponse {
-    const uri = DriveApi.LIST_FILES.replace(':prefix', prefix);
+  public async list(options?: ListOptions): Promise<ListResponse> {
+    const { prefix = '', limit = 1000, last = '' } = options || {};
 
-    let lastValue = '';
-
-    while (true) {
-      const finalUrl = uri
+    const { response, error } = await this.requests.get(
+      DriveApi.LIST_FILES.replace(':prefix', prefix)
         .replace(':limit', limit.toString())
-        .replace(':last', lastValue);
-
-      const { response, error } = await this.requests.get(finalUrl);
-      if (error) {
-        throw error;
-      }
-
-      yield response.names;
-
-      lastValue = response?.paging?.last;
-
-      if (!lastValue) {
-        break;
-      }
+        .replace(':last', last)
+    );
+    if (error) {
+      throw error;
     }
+
+    return response;
+  }
+
+  /**
+   * put files on drive
+   *
+   * @param {string} name
+   * @param {PutOptions} options
+   * @returns {Promise<PutResponse>}
+   */
+  public async put(name: string, options: PutOptions): Promise<PutResponse> {
+    const trimedName = name.trim();
+    if (!trimedName.length) {
+      throw new Error('Name is empty');
+    }
+
+    const encodedName = encodeURIComponent(trimedName);
+
+    if (options.path && options.data) {
+      throw new Error('Please only provide data or a path. Not both');
+    }
+
+    if (!options.path && !options.data) {
+      throw new Error('Please provide data or a path. Both are empty');
+    }
+
+    let buffer = Buffer.from('');
+
+    if (options.path) {
+      buffer = await fs.readFile(options.path);
+    }
+
+    if (options.data) {
+      buffer = isString(options.data)
+        ? Buffer.from(options.data as string, 'utf-8')
+        : (options.data as Buffer);
+    }
+
+    const { response, error } = await this.upload(
+      encodedName,
+      buffer,
+      options.contentType || 'binary/octet-stream'
+    );
+    if (error) {
+      throw error;
+    }
+
+    return response as string;
+  }
+
+  /**
+   * upload files on drive
+   *
+   * @param {string} name
+   * @param {Buffer} data
+   * @param {string} contentType
+   * @returns {Promise<UploadResponse>}
+   */
+  private async upload(
+    name: string,
+    data: Buffer,
+    contentType: string
+  ): Promise<UploadResponse> {
+    const contentLength = data.byteLength;
+    const chunkSize = 1024 * 1024 * 100; // 100MB
+
+    const { response, error } = await this.requests.post(
+      DriveApi.INIT_CHUNK_UPLOAD.replace(':name', name)
+    );
+    if (error) {
+      return { error };
+    }
+
+    const { upload_id: uid } = response;
+
+    let part = 1;
+    for (let idx = 0; idx < contentLength; idx += chunkSize) {
+      const start = idx;
+      const end = Math.min(idx + chunkSize, contentLength);
+
+      const chunk = data.slice(start, end);
+      const { error: err } = await this.requests.post(
+        DriveApi.UPLOAD_FILE_CHUNK.replace(':uid', uid)
+          .replace(':name', name)
+          .replace(':part', part.toString()),
+        chunk,
+        {
+          'Content-Type': contentType,
+        }
+      );
+      if (err) {
+        return { error: err };
+      }
+
+      part += 1;
+    }
+
+    const { error: err } = await this.requests.patch(
+      DriveApi.COMPLETE_FILE_UPLOAD.replace(':uid', uid).replace(':name', name)
+    );
+    if (err) {
+      return { error: err };
+    }
+
+    return { response: name };
   }
 }

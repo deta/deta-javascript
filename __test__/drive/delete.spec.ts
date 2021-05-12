@@ -5,15 +5,21 @@ const driveName = process.env.DRIVE_NAME || '';
 
 const drive = Deta(projectKey).Drive(driveName);
 
-describe.only('Drive#delete', () => {
+describe('Drive#delete', () => {
+  beforeAll(async () => {
+    const name = 'delete-a';
+    const data = await drive.put(name, { data: 'hello' });
+    expect(data).toEqual(name);
+  });
+
   it('delete file by using name', async () => {
-    const name = 'delete-a.png';
+    const name = 'delete-a';
     const data = await drive.delete(name);
     expect(data).toEqual(name);
   });
 
   it('delete file by using name that does not exists on drive', async () => {
-    const name = 'delete-aa.png';
+    const name = 'delete-aa';
     const data = await drive.delete(name);
     expect(data).toEqual(name);
   });

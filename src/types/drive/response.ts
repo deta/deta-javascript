@@ -9,4 +9,17 @@ export interface DeleteManyResponse {
   failed: { [key: string]: string };
 }
 
-export type ListResponse = AsyncGenerator<string[], void, void>;
+export interface ListResponse {
+  names: string[];
+  paging: {
+    size: number;
+    last: string;
+  };
+}
+
+export type PutResponse = string;
+
+export interface UploadResponse {
+  response?: any;
+  error?: Error;
+}

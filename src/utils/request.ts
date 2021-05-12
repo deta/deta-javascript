@@ -37,7 +37,6 @@ export default class Requests {
       baseURL: baseURL.replace(':project_id', projectId),
       headers: {
         'X-API-Key': projectKey,
-        'Content-Type': 'application/json',
       },
     };
   }
@@ -90,13 +89,19 @@ export default class Requests {
    *
    * @param {string} uri
    * @param {any} payload
+   * @param {[key: string]: string} headers
    * @returns {Promise<Response>}
    */
-  public post(uri: string, payload: any): Promise<Response> {
+  public post(
+    uri: string,
+    payload?: any,
+    headers?: { [key: string]: string }
+  ): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
       body: payload,
       method: Method.Post,
+      headers: { ...this.requestConfig.headers, ...headers },
     });
   }
 
@@ -107,7 +112,7 @@ export default class Requests {
    * @param {any} payload
    * @returns {Promise<Response>}
    */
-  public patch(uri: string, payload: any): Promise<Response> {
+  public patch(uri: string, payload?: any): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
       body: payload,
@@ -117,20 +122,32 @@ export default class Requests {
 
   static async fetch(url: string, config: Request): Promise<Response> {
     try {
+      const body =
+        config.body instanceof Buffer
+          ? config.body
+          : JSON.stringify(config.body);
+
+      const contentType =
+        config?.headers?.['Content-Type'] || 'application/json';
+
+      const headers = {
+        ...config.headers,
+        'Content-Type': contentType,
+      };
+
       const response = await fetch(`${config.baseURL}${url}`, {
-        body: JSON.stringify(config.body),
+        body,
+        headers,
         method: config.method,
-        headers: config.headers,
       });
 
-      let data: any;
+      let data: any = await response.text();
 
       // check if the response is json
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('application/json')) {
-        data = await response.json();
-      } else {
-        data = await response.buffer();
+      try {
+        data = JSON.parse(data);
+      } catch (err) {
+        data = Buffer.from(data);
       }
 
       if (!response.ok) {

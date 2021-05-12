@@ -9,7 +9,7 @@
     "lint:fix": "eslint -c .eslintrc.js . --ext .ts --fix",
     "test": "jest --config jest.config.json --runInBand",
     "prepare": "husky install",
-    "t": "jest --config jest.config.json --runInBand __test__/drive/list.spec.ts"
+    "t": "jest --config jest.config.json --runInBand __test__/drive"
   },
   "main": "./dist/index.js",
   "author": "Deta",
