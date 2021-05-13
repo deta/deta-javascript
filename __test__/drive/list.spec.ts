@@ -50,18 +50,18 @@ describe('Drive#list', () => {
   it('list files using prefix', async () => {
     const expected = {
       paging: {
-        size: 1,
+        size: 2,
         last: 'list-b',
       },
       names: ['list-a', 'list-b'],
     };
-    const data = await drive.list({ limit: 2, prefix: 'list' });
+    const data = await drive.list({ limit: 2, prefix: 'list-' });
     expect(data).toEqual(expected);
   });
 
   it('list files using last', async () => {
     const expected = {
-      names: ['list-a', 'list-c'],
+      names: ['list-c'],
     };
     const data = await drive.list({ limit: 2, prefix: 'list', last: 'list-b' });
     expect(data).toEqual(expected);
