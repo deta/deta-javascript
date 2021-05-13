@@ -19,6 +19,7 @@ describe('Base#update', () => {
           },
           on_mobile: true,
           likes: ['anime'],
+          dislikes: ['comedy'],
           purchases: 1,
         },
         {
@@ -31,6 +32,7 @@ describe('Base#update', () => {
           },
           on_mobile: true,
           likes: ['anime'],
+          dislikes: ['comedy'],
           purchases: 1,
         },
       ],
@@ -67,6 +69,7 @@ describe('Base#update', () => {
         on_mobile: db.util.trim(),
         purchases: db.util.increment(2),
         likes: db.util.append('ramen'),
+        dislikes: db.util.prepend('action'),
       },
       'update-user-a',
       {
@@ -78,7 +81,28 @@ describe('Base#update', () => {
           email: 'jimmy@deta.sh',
         },
         likes: ['anime', 'ramen'],
+        dislikes: ['action', 'comedy'],
         purchases: 3,
+      },
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+        likes: db.util.append(['momo']),
+        dislikes: db.util.prepend(['romcom']),
+      },
+      'update-user-a',
+      {
+        key: 'update-user-a',
+        username: 'jimmy',
+        profile: {
+          age: 33,
+          active: true,
+          email: 'jimmy@deta.sh',
+        },
+        likes: ['anime', 'ramen', 'momo'],
+        dislikes: ['romcom', 'action', 'comedy'],
+        purchases: 4,
       },
     ],
   ])('update data `update(%p, "%s")`', async (updates, key, expected) => {

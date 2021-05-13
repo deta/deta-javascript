@@ -22,7 +22,7 @@ export default class Deta {
   public Base(baseName: string): BaseClass {
     const name = baseName.trim();
     if (!name) {
-      throw Error('Base name is not defined');
+      throw new Error('Base name is not defined');
     }
     return new BaseClass(this.projectKey, name);
   }
@@ -36,7 +36,7 @@ export default class Deta {
   public Drive(driveName: string): DriveClass {
     const name = driveName.trim();
     if (!name) {
-      throw Error('Drive name is not defined');
+      throw new Error('Drive name is not defined');
     }
     return new DriveClass(this.projectKey, name);
   }
