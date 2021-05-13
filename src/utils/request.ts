@@ -151,9 +151,10 @@ export default class Requests {
       }
 
       if (!response.ok) {
+        const message = data?.errors?.[0] || 'Something went wrong';
         return {
           status: response.status,
-          error: new Error(data?.errors?.[0] || 'Something went wrong'),
+          error: new Error(message),
         };
       }
 
