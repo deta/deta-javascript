@@ -47,7 +47,7 @@ export default class Drive {
     const { status, response, error } = await this.requests.get(
       DriveApi.GET_FILE.replace(':name', encodedName)
     );
-    if (status === 400 && error) {
+    if (status === 404 && error) {
       return null;
     }
 
