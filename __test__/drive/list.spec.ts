@@ -5,8 +5,7 @@ const driveName = process.env.DRIVE_NAME || '';
 
 const drive = Deta(projectKey).Drive(driveName);
 
-// skipping list test as list api is broken at the moment
-describe.skip('Drive#list', () => {
+describe('Drive#list', () => {
   beforeAll(async () => {
     const inputs = [['list-a'], ['list-b'], ['list-c']];
 
