@@ -4,15 +4,17 @@ import typescript from '@rollup/plugin-typescript';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 export default {
-  input: 'src/index.ts',
+  input: './src/index.ts',
   output: {
     file: './build/index.js',
     format: 'cjs',
     sourcemap: true,
   },
   plugins: [
-    typescript({ tsconfig: './tsconfig.json' }),
-    commonjs({ extensions: ['.js', '.ts'] }),
+    typescript({
+      tsconfig: './tsconfig.json',
+    }),
+    commonjs({ extensions: ['.ts'] }),
     nodeResolve(),
     sourceMaps(),
   ],
