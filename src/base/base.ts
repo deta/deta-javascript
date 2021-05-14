@@ -65,12 +65,12 @@ export default class Base {
    * @returns {Promise<GetResponse>}
    */
   public async get(key: string): Promise<GetResponse> {
-    const trimedKey = key.trim();
-    if (!trimedKey.length) {
+    const trimmedKey = key.trim();
+    if (!trimmedKey.length) {
       throw new Error('Key is empty');
     }
 
-    const encodedKey = encodeURIComponent(trimedKey);
+    const encodedKey = encodeURIComponent(trimmedKey);
 
     const { status, response, error } = await this.requests.get(
       BaseApi.GET_ITEMS.replace(':key', encodedKey)
@@ -94,12 +94,12 @@ export default class Base {
    * @returns {Promise<DeleteResponse>}
    */
   public async delete(key: string): Promise<DeleteResponse> {
-    const trimedKey = key.trim();
-    if (!trimedKey.length) {
+    const trimmedKey = key.trim();
+    if (!trimmedKey.length) {
       throw new Error('Key is empty');
     }
 
-    const encodedKey = encodeURIComponent(trimedKey);
+    const encodedKey = encodeURIComponent(trimmedKey);
 
     const { error } = await this.requests.delete(
       BaseApi.DELETE_ITEMS.replace(':key', encodedKey)
@@ -180,8 +180,8 @@ export default class Base {
     updates: ObjectType,
     key: string
   ): Promise<UpdateResponse> {
-    const trimedKey = key.trim();
-    if (!trimedKey.length) {
+    const trimmedKey = key.trim();
+    if (!trimmedKey.length) {
       throw new Error('Key is empty');
     }
 
@@ -217,7 +217,7 @@ export default class Base {
       }
     });
 
-    const encodedKey = encodeURIComponent(trimedKey);
+    const encodedKey = encodeURIComponent(trimmedKey);
     const { error } = await this.requests.patch(
       BaseApi.PATCH_ITEMS.replace(':key', encodedKey),
       payload

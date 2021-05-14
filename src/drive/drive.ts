@@ -37,12 +37,12 @@ export default class Drive {
    * @returns {Promise<GetResponse>}
    */
   public async get(name: string): Promise<GetResponse> {
-    const trimedName = name.trim();
-    if (!trimedName.length) {
+    const trimmedName = name.trim();
+    if (!trimmedName.length) {
       throw new Error('Name is empty');
     }
 
-    const encodedName = encodeURIComponent(trimedName);
+    const encodedName = encodeURIComponent(trimmedName);
 
     const { status, response, error } = await this.requests.get(
       DriveApi.GET_FILE.replace(':name', encodedName)
@@ -65,8 +65,8 @@ export default class Drive {
    * @returns {Promise<DeleteResponse>}
    */
   public async delete(name: string): Promise<DeleteResponse> {
-    const trimedName = name.trim();
-    if (!trimedName.length) {
+    const trimmedName = name.trim();
+    if (!trimmedName.length) {
       throw new Error('Name is empty');
     }
 
@@ -149,12 +149,12 @@ export default class Drive {
    * @returns {Promise<PutResponse>}
    */
   public async put(name: string, options: PutOptions): Promise<PutResponse> {
-    const trimedName = name.trim();
-    if (!trimedName.length) {
+    const trimmedName = name.trim();
+    if (!trimmedName.length) {
       throw new Error('Name is empty');
     }
 
-    const encodedName = encodeURIComponent(trimedName);
+    const encodedName = encodeURIComponent(trimmedName);
 
     if (options.path && options.data) {
       throw new Error('Please only provide data or a path. Not both');
@@ -202,7 +202,7 @@ export default class Drive {
     contentType: string
   ): Promise<UploadResponse> {
     const contentLength = data.byteLength;
-    const chunkSize = 1024 * 1024 * 100; // 100MB
+    const chunkSize = 1024 * 1024 * 10; // 10MB
 
     const { response, error } = await this.requests.post(
       DriveApi.INIT_CHUNK_UPLOAD.replace(':name', name)
