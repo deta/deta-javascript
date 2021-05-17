@@ -1,6 +1,5 @@
-import { promises as fs } from 'fs';
-
 import url from '../constants/url';
+import { isNode } from '../utils/node';
 import Requests from '../utils/request';
 import { isString } from '../utils/string';
 import { DriveApi } from '../constants/api';
@@ -164,9 +163,14 @@ export default class Drive {
       throw new Error('Please provide data or a path. Both are empty');
     }
 
+    if (options.path && !isNode()) {
+      throw new Error("Can't use path in browser environment");
+    }
+
     let buffer = Buffer.from('');
 
     if (options.path) {
+      const fs = require('fs').promises;
       buffer = await fs.readFile(options.path);
     }
 

@@ -1,4 +1,8 @@
-import fetch from 'node-fetch';
+import { isNode } from './node';
+
+if (isNode()) {
+  globalThis.fetch = require('node-fetch');
+}
 
 interface Request {
   body?: any;

@@ -8,5 +8,6 @@ module.exports = {
     'class-methods-use-this': 0,
     'no-await-in-loop': 0,
     'no-constant-condition': 0,
+    'global-require': 0,
   },
 };
