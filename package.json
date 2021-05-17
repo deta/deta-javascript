@@ -8,7 +8,8 @@
     "lint": "eslint -c .eslintrc.js . --ext .ts",
     "lint:fix": "eslint -c .eslintrc.js . --ext .ts --fix",
     "test": "jest --config jest.config.json --runInBand",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "postinstall": "rollup -c"
   },
   "main": "./build/index.js",
   "module": "./build/index.es.js",
