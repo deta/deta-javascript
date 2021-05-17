@@ -151,6 +151,10 @@ export default class Base {
       throw new Error('Items must be an array');
     }
 
+    if (!items.length) {
+      throw new Error("Items can't be empty");
+    }
+
     if (items.length > 25) {
       throw new Error("We can't put more than 25 items at a time");
     }
