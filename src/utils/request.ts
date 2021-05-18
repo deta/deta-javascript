@@ -165,7 +165,6 @@ export default class Requests {
 
       return { status: response.status, response: data };
     } catch (err) {
-      console.log(err);
       return { status: 500, error: new Error('Something went wrong') };
     }
   }
