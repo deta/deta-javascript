@@ -1,6 +1,6 @@
 import { NullType } from '../basic';
 
-export type GetResponse = Buffer | NullType;
+export type GetResponse = Uint8Array | NullType;
 
 export type DeleteResponse = string;
 

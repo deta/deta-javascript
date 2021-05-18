@@ -1,4 +1,5 @@
 import { isNode } from './node';
+import { stringToUint8Array } from './buffer';
 
 if (isNode()) {
   globalThis.fetch = require('node-fetch');
@@ -127,7 +128,7 @@ export default class Requests {
   static async fetch(url: string, config: Request): Promise<Response> {
     try {
       const body =
-        config.body instanceof Buffer
+        config.body instanceof Uint8Array
           ? config.body
           : JSON.stringify(config.body);
 
@@ -151,7 +152,7 @@ export default class Requests {
       try {
         data = JSON.parse(data);
       } catch (err) {
-        data = Buffer.from(data);
+        data = stringToUint8Array(data);
       }
 
       if (!response.ok) {
@@ -164,6 +165,7 @@ export default class Requests {
 
       return { status: response.status, response: data };
     } catch (err) {
+      console.log(err);
       return { status: 500, error: new Error('Something went wrong') };
     }
   }

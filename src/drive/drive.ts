@@ -4,6 +4,7 @@ import Requests from '../utils/request';
 import { isString } from '../utils/string';
 import { DriveApi } from '../constants/api';
 import { ObjectType } from '../types/basic';
+import { stringToUint8Array } from '../utils/buffer';
 import { PutOptions, ListOptions } from '../types/drive/request';
 
 import {
@@ -167,17 +168,18 @@ export default class Drive {
       throw new Error("Can't use path in browser environment");
     }
 
-    let buffer = Buffer.from('');
+    let buffer = new Uint8Array();
 
     if (options.path) {
       const fs = require('fs').promises;
-      buffer = await fs.readFile(options.path);
+      const buf = await fs.readFile(options.path);
+      buffer = new Uint8Array(buf);
     }
 
     if (options.data) {
       buffer = isString(options.data)
-        ? Buffer.from(options.data as string, 'utf-8')
-        : (options.data as Buffer);
+        ? stringToUint8Array(options.data as string)
+        : (options.data as Uint8Array);
     }
 
     const { response, error } = await this.upload(
@@ -196,13 +198,13 @@ export default class Drive {
    * upload files on drive
    *
    * @param {string} name
-   * @param {Buffer} data
+   * @param {Uint8Array} data
    * @param {string} contentType
    * @returns {Promise<UploadResponse>}
    */
   private async upload(
     name: string,
-    data: Buffer,
+    data: Uint8Array,
     contentType: string
   ): Promise<UploadResponse> {
     const contentLength = data.byteLength;

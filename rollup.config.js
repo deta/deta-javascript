@@ -1,4 +1,5 @@
-import { terser } from 'rollup-plugin-terser';
+import replace from '@rollup/plugin-replace';
+// import { terser } from 'rollup-plugin-terser';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
@@ -16,6 +17,11 @@ export default {
       file: pkg.module,
       format: 'es', // ES Modules
     },
+    {
+      name: 'Deta',
+      file: pkg.browser,
+      format: 'iife', // browser,
+    },
   ],
   plugins: [
     typescript({
@@ -23,6 +29,12 @@ export default {
     }),
     nodeResolve(),
     commonjs({ extensions: ['.ts'] }),
-    terser(),
+    // terser(),
+    replace({
+      'process.env.DETA_PROJECT_KEY': JSON.stringify(''),
+      'process.env.DETA_BASE_HOST': JSON.stringify(''),
+      'process.env.DETA_DRIVE_HOST': JSON.stringify(''),
+      preventAssignment: true,
+    }),
   ],
 };

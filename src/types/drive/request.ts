@@ -1,5 +1,5 @@
 export interface PutOptions {
-  data?: string | Buffer;
+  data?: string | Uint8Array;
   path?: string;
   contentType?: string;
 }

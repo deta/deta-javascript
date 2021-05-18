@@ -6,14 +6,14 @@ const driveName = process.env.DRIVE_NAME || '';
 const drive = Deta(projectKey).Drive(driveName);
 
 describe('Drive#put', () => {
-  afterAll(async () => {
-    const names = ['put-test.svg', 'put-data', 'put-data-1'];
-    const expected = {
-      deleted: ['put-test.svg', 'put-data', 'put-data-1'],
-    };
-    const data = await drive.deleteMany(names);
-    expect(data).toEqual(expected);
-  });
+  // afterAll(async () => {
+  //   const names = ['put-test.svg', 'put-data', 'put-data-1'];
+  //   const expected = {
+  //     deleted: ['put-test.svg', 'put-data', 'put-data-1'],
+  //   };
+  //   const data = await drive.deleteMany(names);
+  //   expect(data).toEqual(expected);
+  // });
 
   it('put file', async () => {
     const name = 'put-test.svg';
