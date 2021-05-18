@@ -1,5 +1,4 @@
 import { isNode } from './node';
-import { stringToUint8Array } from './buffer';
 
 if (isNode()) {
   globalThis.fetch = require('node-fetch');
@@ -146,13 +145,13 @@ export default class Requests {
         method: config.method,
       });
 
-      let data: any = await response.text();
+      let data;
 
       // check if the response is json
       try {
-        data = JSON.parse(data);
+        data = await response.clone().json();
       } catch (err) {
-        data = stringToUint8Array(data);
+        data = await response.clone().blob();
       }
 
       if (!response.ok) {
