@@ -177,18 +177,16 @@ export default class Drive {
     }
 
     if (options.data) {
-      if (isString(options.data)) {
+      if (isNode() && options.data instanceof Buffer) {
+        buffer = bufferToUint8Array(options.data as Buffer);
+      } else if (isString(options.data)) {
         buffer = stringToUint8Array(options.data as string);
-      }
-
-      if (options.data instanceof Uint8Array) {
+      } else if (options.data instanceof Uint8Array) {
         buffer = options.data as Uint8Array;
-      }
-
-      if (isNode()) {
-        if (options.data instanceof Buffer) {
-          buffer = bufferToUint8Array(options.data as Buffer);
-        }
+      } else {
+        throw new Error(
+          'Unsupported data format, expected data to be one of: string | Uint8Array | Buffer'
+        );
       }
     }
 
