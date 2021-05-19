@@ -219,7 +219,11 @@ export default class Drive {
     const chunkSize = 1024 * 1024 * 10; // 10MB
 
     const { response, error } = await this.requests.post(
-      DriveApi.INIT_CHUNK_UPLOAD.replace(':name', name)
+      DriveApi.INIT_CHUNK_UPLOAD.replace(':name', name),
+      null,
+      {
+        'Content-Type': contentType,
+      }
     );
     if (error) {
       return { error };
