@@ -7,9 +7,9 @@ const drive = Deta(projectKey).Drive(driveName);
 
 describe('Drive#put', () => {
   afterAll(async () => {
-    const names = ['put-test.svg', 'put-data', 'put-data-1'];
+    const names = ['put-test.svg', 'put-data', 'put-data-1', 'put-data-2'];
     const expected = {
-      deleted: ['put-test.svg', 'put-data', 'put-data-1'],
+      deleted: ['put-test.svg', 'put-data', 'put-data-1', 'put-data-2'],
     };
     const data = await drive.deleteMany(names);
     expect(data).toEqual(expected);
@@ -38,6 +38,15 @@ describe('Drive#put', () => {
     const data = await drive.put(name, {
       data: 'Hello world',
       contentType: 'text/plain',
+    });
+
+    expect(data).toEqual(name);
+  });
+
+  it('put data as Buffer', async () => {
+    const name = 'put-data-2';
+    const data = await drive.put(name, {
+      data: Buffer.from('Hello world, Hello'),
     });
 
     expect(data).toEqual(name);
@@ -75,6 +84,16 @@ describe('Drive#put', () => {
         contentType: 'text/plain',
       },
       new Error('Please provide data or a path. Both are empty'),
+    ],
+    [
+      'put-data-4',
+      {
+        data: 12 as any,
+        contentType: 'text/plain',
+      },
+      new Error(
+        'Unsupported data format, expected data to be one of: string | Uint8Array | Buffer'
+      ),
     ],
   ])(
     'put file by using invalid name or body `put("%s", %p)`',

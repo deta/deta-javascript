@@ -5,6 +5,7 @@ import { isString } from '../utils/string';
 import { DriveApi } from '../constants/api';
 import { ObjectType } from '../types/basic';
 import { PutOptions, ListOptions } from '../types/drive/request';
+import { stringToUint8Array, bufferToUint8Array } from '../utils/buffer';
 
 import {
   GetResponse,
@@ -167,17 +168,26 @@ export default class Drive {
       throw new Error("Can't use path in browser environment");
     }
 
-    let buffer = Buffer.from('');
+    let buffer = new Uint8Array();
 
     if (options.path) {
       const fs = require('fs').promises;
-      buffer = await fs.readFile(options.path);
+      const buf = await fs.readFile(options.path);
+      buffer = new Uint8Array(buf);
     }
 
     if (options.data) {
-      buffer = isString(options.data)
-        ? Buffer.from(options.data as string, 'utf-8')
-        : (options.data as Buffer);
+      if (isNode() && options.data instanceof Buffer) {
+        buffer = bufferToUint8Array(options.data as Buffer);
+      } else if (isString(options.data)) {
+        buffer = stringToUint8Array(options.data as string);
+      } else if (options.data instanceof Uint8Array) {
+        buffer = options.data as Uint8Array;
+      } else {
+        throw new Error(
+          'Unsupported data format, expected data to be one of: string | Uint8Array | Buffer'
+        );
+      }
     }
 
     const { response, error } = await this.upload(
@@ -196,20 +206,25 @@ export default class Drive {
    * upload files on drive
    *
    * @param {string} name
-   * @param {Buffer} data
+   * @param {Uint8Array} data
    * @param {string} contentType
    * @returns {Promise<UploadResponse>}
    */
   private async upload(
     name: string,
-    data: Buffer,
+    data: Uint8Array,
     contentType: string
   ): Promise<UploadResponse> {
     const contentLength = data.byteLength;
     const chunkSize = 1024 * 1024 * 10; // 10MB
 
     const { response, error } = await this.requests.post(
-      DriveApi.INIT_CHUNK_UPLOAD.replace(':name', name)
+      DriveApi.INIT_CHUNK_UPLOAD.replace(':name', name),
+      {
+        headers: {
+          'Content-Type': contentType,
+        },
+      }
     );
     if (error) {
       return { error };
@@ -227,9 +242,11 @@ export default class Drive {
         DriveApi.UPLOAD_FILE_CHUNK.replace(':uid', uid)
           .replace(':name', name)
           .replace(':part', part.toString()),
-        chunk,
         {
-          'Content-Type': contentType,
+          payload: chunk,
+          headers: {
+            'Content-Type': contentType,
+          },
         }
       );
       if (err) {

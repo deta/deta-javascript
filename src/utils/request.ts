@@ -4,6 +4,11 @@ if (isNode()) {
   globalThis.fetch = require('node-fetch');
 }
 
+interface RequestInit {
+  payload?: any;
+  headers?: { [key: string]: string };
+}
+
 interface Request {
   body?: any;
   method?: string;
@@ -18,11 +23,11 @@ interface Response {
 }
 
 enum Method {
-  Put = 'put',
-  Get = 'get',
-  Post = 'post',
-  Patch = 'patch',
-  Delete = 'delete',
+  Put = 'PUT',
+  Get = 'GET',
+  Post = 'POST',
+  Patch = 'PATCH',
+  Delete = 'DELETE',
 }
 
 export default class Requests {
@@ -96,16 +101,12 @@ export default class Requests {
    * @param {[key: string]: string} headers
    * @returns {Promise<Response>}
    */
-  public post(
-    uri: string,
-    payload?: any,
-    headers?: { [key: string]: string }
-  ): Promise<Response> {
+  public post(uri: string, init: RequestInit): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
-      body: payload,
+      body: init.payload,
       method: Method.Post,
-      headers: { ...this.requestConfig.headers, ...headers },
+      headers: { ...this.requestConfig.headers, ...init.headers },
     });
   }
 
@@ -127,7 +128,7 @@ export default class Requests {
   static async fetch(url: string, config: Request): Promise<Response> {
     try {
       const body =
-        config.body instanceof Buffer
+        config.body instanceof Uint8Array
           ? config.body
           : JSON.stringify(config.body);
 
@@ -145,13 +146,13 @@ export default class Requests {
         method: config.method,
       });
 
-      let data: any = await response.text();
+      let data;
 
       // check if the response is json
       try {
-        data = JSON.parse(data);
+        data = await response.clone().json();
       } catch (err) {
-        data = Buffer.from(data);
+        data = await response.clone().blob();
       }
 
       if (!response.ok) {
