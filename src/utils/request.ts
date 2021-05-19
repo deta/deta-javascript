@@ -1,4 +1,13 @@
-import fetch from 'node-fetch';
+import { isNode } from './node';
+
+if (isNode()) {
+  globalThis.fetch = require('node-fetch');
+}
+
+interface RequestInit {
+  payload?: any;
+  headers?: { [key: string]: string };
+}
 
 interface Request {
   body?: any;
@@ -14,11 +23,11 @@ interface Response {
 }
 
 enum Method {
-  Put = 'put',
-  Get = 'get',
-  Post = 'post',
-  Patch = 'patch',
-  Delete = 'delete',
+  Put = 'PUT',
+  Get = 'GET',
+  Post = 'POST',
+  Patch = 'PATCH',
+  Delete = 'DELETE',
 }
 
 export default class Requests {
@@ -37,7 +46,6 @@ export default class Requests {
       baseURL: baseURL.replace(':project_id', projectId),
       headers: {
         'X-API-Key': projectKey,
-        'Content-Type': 'application/json',
       },
     };
   }
@@ -61,11 +69,13 @@ export default class Requests {
    * delete sends a HTTP delete request
    *
    * @param {string} uri
+   * @param {any} [payload]
    * @returns {Promise<Response>}
    */
-  public async delete(uri: string): Promise<Response> {
+  public async delete(uri: string, payload?: any): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
+      body: payload,
       method: Method.Delete,
     });
   }
@@ -88,13 +98,15 @@ export default class Requests {
    *
    * @param {string} uri
    * @param {any} payload
+   * @param {[key: string]: string} headers
    * @returns {Promise<Response>}
    */
-  public post(uri: string, payload: any): Promise<Response> {
+  public post(uri: string, init: RequestInit): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
-      body: payload,
+      body: init.payload,
       method: Method.Post,
+      headers: { ...this.requestConfig.headers, ...init.headers },
     });
   }
 
@@ -105,7 +117,7 @@ export default class Requests {
    * @param {any} payload
    * @returns {Promise<Response>}
    */
-  public patch(uri: string, payload: any): Promise<Response> {
+  public patch(uri: string, payload?: any): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
       body: payload,
@@ -114,21 +126,46 @@ export default class Requests {
   }
 
   static async fetch(url: string, config: Request): Promise<Response> {
-    const response = await fetch(`${config.baseURL}${url}`, {
-      body: JSON.stringify(config.body),
-      method: config.method,
-      headers: config.headers,
-    });
+    try {
+      const body =
+        config.body instanceof Uint8Array
+          ? config.body
+          : JSON.stringify(config.body);
 
-    const data = await response.json();
+      const contentType =
+        config?.headers?.['Content-Type'] || 'application/json';
 
-    if (!response.ok) {
-      return {
-        status: response.status,
-        error: new Error(data?.errors?.[0] || 'Something went wrong'),
+      const headers = {
+        ...config.headers,
+        'Content-Type': contentType,
       };
-    }
 
-    return { status: response.status, response: data };
+      const response = await fetch(`${config.baseURL}${url}`, {
+        body,
+        headers,
+        method: config.method,
+      });
+
+      let data;
+
+      // check if the response is json
+      try {
+        data = await response.clone().json();
+      } catch (err) {
+        data = await response.clone().blob();
+      }
+
+      if (!response.ok) {
+        const message = data?.errors?.[0] || 'Something went wrong';
+        return {
+          status: response.status,
+          error: new Error(message),
+        };
+      }
+
+      return { status: response.status, response: data };
+    } catch (err) {
+      return { status: 500, error: new Error('Something went wrong') };
+    }
   }
 }

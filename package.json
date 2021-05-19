@@ -3,7 +3,8 @@
   "version": "0.0.4",
   "description": "Deta library for Javascript",
   "scripts": {
-    "build": "tsc",
+    "prebuild": "rimraf dist",
+    "build": "rollup -c",
     "format": "prettier --write .",
     "lint": "eslint -c .eslintrc.js . --ext .ts",
     "lint:fix": "eslint -c .eslintrc.js . --ext .ts --fix",
@@ -11,6 +12,12 @@
     "prepare": "husky install"
   },
   "main": "./dist/index.js",
+  "module": "./dist/index.es.js",
+  "browser": "./dist/index.browser.js",
+  "files": [
+    "dist"
+  ],
+  "types": "./dist/types/index.d.ts",
   "author": "Deta",
   "license": "MIT",
   "repository": {
@@ -28,6 +35,10 @@
   },
   "homepage": "https://github.com/deta/deta-javascript#readme",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@rollup/plugin-replace": "^2.4.2",
+    "@rollup/plugin-typescript": "^8.2.1",
     "@types/jest": "^26.0.23",
     "@types/node": "^15.0.2",
     "@types/node-fetch": "^2.5.10",
@@ -41,6 +52,9 @@
     "husky": "^6.0.0",
     "jest": "^26.6.3",
     "prettier": "^2.2.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.47.0",
+    "rollup-plugin-terser": "^7.0.2",
     "ts-jest": "^26.5.6",
     "typescript": "^4.2.4"
   },

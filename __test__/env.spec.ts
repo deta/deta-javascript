@@ -12,4 +12,11 @@ describe('can load env', () => {
     expect(dbName).toBeDefined();
     expect(dbName).not.toEqual('');
   });
+
+  it('DRIVE_NAME', () => {
+    const driveName = process?.env?.DRIVE_NAME?.trim();
+
+    expect(driveName).toBeDefined();
+    expect(driveName).not.toEqual('');
+  });
 });

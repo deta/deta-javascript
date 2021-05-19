@@ -1,7 +1,7 @@
 import BaseUtils from './utils';
-import api from '../constants/api';
 import url from '../constants/url';
 import Requests from '../utils/request';
+import { BaseApi } from '../constants/api';
 import { isObject } from '../utils/object';
 import { Action, ActionTypes } from '../types/action';
 import { DetaType, ArrayType, ObjectType } from '../types/basic';
@@ -9,11 +9,12 @@ import { DetaType, ArrayType, ObjectType } from '../types/basic';
 import {
   GetResponse,
   PutResponse,
+  FetchResponse,
   DeleteResponse,
   InsertResponse,
   UpdateResponse,
   PutManyResponse,
-} from '../types/response';
+} from '../types/base/response';
 
 export default class Base {
   private requests: Requests;
@@ -47,7 +48,7 @@ export default class Base {
       },
     ];
 
-    const { response, error } = await this.requests.put(api.PUT_ITEMS, {
+    const { response, error } = await this.requests.put(BaseApi.PUT_ITEMS, {
       items: payload,
     });
     if (error) {
@@ -64,15 +65,15 @@ export default class Base {
    * @returns {Promise<GetResponse>}
    */
   public async get(key: string): Promise<GetResponse> {
-    const trimedKey = key.trim();
-    if (!trimedKey.length) {
+    const trimmedKey = key.trim();
+    if (!trimmedKey.length) {
       throw new Error('Key is empty');
     }
 
-    const encodedKey = encodeURIComponent(trimedKey);
+    const encodedKey = encodeURIComponent(trimmedKey);
 
     const { status, response, error } = await this.requests.get(
-      api.GET_ITEMS.replace(':key', encodedKey)
+      BaseApi.GET_ITEMS.replace(':key', encodedKey)
     );
 
     if (error && status !== 404) {
@@ -93,15 +94,15 @@ export default class Base {
    * @returns {Promise<DeleteResponse>}
    */
   public async delete(key: string): Promise<DeleteResponse> {
-    const trimedKey = key.trim();
-    if (!trimedKey.length) {
+    const trimmedKey = key.trim();
+    if (!trimmedKey.length) {
       throw new Error('Key is empty');
     }
 
-    const encodedKey = encodeURIComponent(trimedKey);
+    const encodedKey = encodeURIComponent(trimmedKey);
 
     const { error } = await this.requests.delete(
-      api.DELETE_ITEMS.replace(':key', encodedKey)
+      BaseApi.DELETE_ITEMS.replace(':key', encodedKey)
     );
     if (error) {
       throw error;
@@ -124,9 +125,11 @@ export default class Base {
     };
 
     const { status, response, error } = await this.requests.post(
-      api.INSERT_ITEMS,
+      BaseApi.INSERT_ITEMS,
       {
-        item: payload,
+        payload: {
+          item: payload,
+        },
       }
     );
     if (error && status === 409) {
@@ -150,6 +153,10 @@ export default class Base {
       throw new Error('Items must be an array');
     }
 
+    if (!items.length) {
+      throw new Error("Items can't be empty");
+    }
+
     if (items.length > 25) {
       throw new Error("We can't put more than 25 items at a time");
     }
@@ -158,7 +165,7 @@ export default class Base {
       isObject(item) ? (item as ObjectType) : { value: item }
     );
 
-    const { response, error } = await this.requests.put(api.PUT_ITEMS, {
+    const { response, error } = await this.requests.put(BaseApi.PUT_ITEMS, {
       items: payload,
     });
     if (error) {
@@ -179,8 +186,8 @@ export default class Base {
     updates: ObjectType,
     key: string
   ): Promise<UpdateResponse> {
-    const trimedKey = key.trim();
-    if (!trimedKey.length) {
+    const trimmedKey = key.trim();
+    if (!trimmedKey.length) {
       throw new Error('Key is empty');
     }
 
@@ -216,9 +223,9 @@ export default class Base {
       }
     });
 
-    const encodedKey = encodeURIComponent(trimedKey);
+    const encodedKey = encodeURIComponent(trimmedKey);
     const { error } = await this.requests.patch(
-      api.PATCH_ITEMS.replace(':key', encodedKey),
+      BaseApi.PATCH_ITEMS.replace(':key', encodedKey),
       payload
     );
     if (error) {
@@ -234,13 +241,13 @@ export default class Base {
    * @param {DetaType} [query]
    * @param {number} [pages]
    * @param {number} [buffer]
-   * @returns {Promise<UpdateResponse>}
+   * @returns {FetchResponse}
    */
   public async *fetch(
     query: DetaType = [],
     pages: number = 10,
     buffer?: number
-  ): AsyncGenerator<ObjectType[], void, void> {
+  ): FetchResponse {
     let lastValue = '';
     const q = Array.isArray(query) ? query : [query];
 
@@ -252,8 +259,8 @@ export default class Base {
       };
 
       const { response, error } = await this.requests.post(
-        api.QUERY_ITEMS,
-        payload
+        BaseApi.QUERY_ITEMS,
+        { payload }
       );
       if (error) {
         throw error;

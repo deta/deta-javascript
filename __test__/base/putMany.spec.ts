@@ -120,4 +120,13 @@ describe('Base#putMany', () => {
       );
     }
   });
+
+  it('putMany items length is zero', async () => {
+    const items = new Array(0);
+    try {
+      await db.putMany(items);
+    } catch (err) {
+      expect(err).toEqual(new Error("Items can't be empty"));
+    }
+  });
 });

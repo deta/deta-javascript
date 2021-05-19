@@ -1,4 +1,4 @@
-import { NullType, ObjectType, ArrayType } from './basic';
+import { NullType, ObjectType, ArrayType } from '../basic';
 
 export type DeleteResponse = NullType;
 
@@ -15,3 +15,5 @@ export interface PutManyResponse {
 }
 
 export type UpdateResponse = NullType;
+
+export type FetchResponse = AsyncGenerator<ObjectType[], void, void>;
