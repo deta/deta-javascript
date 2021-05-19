@@ -4,8 +4,8 @@ import Requests from '../utils/request';
 import { isString } from '../utils/string';
 import { DriveApi } from '../constants/api';
 import { ObjectType } from '../types/basic';
-import { stringToUint8Array } from '../utils/buffer';
 import { PutOptions, ListOptions } from '../types/drive/request';
+import { stringToUint8Array, bufferToUint8Array } from '../utils/buffer';
 
 import {
   GetResponse,
@@ -177,9 +177,19 @@ export default class Drive {
     }
 
     if (options.data) {
-      buffer = isString(options.data)
-        ? stringToUint8Array(options.data as string)
-        : (options.data as Uint8Array);
+      if (isString(options.data)) {
+        buffer = stringToUint8Array(options.data as string);
+      }
+
+      if (options.data instanceof Uint8Array) {
+        buffer = options.data as Uint8Array;
+      }
+
+      if (isNode()) {
+        if (options.data instanceof Buffer) {
+          buffer = bufferToUint8Array(options.data as Buffer);
+        }
+      }
     }
 
     const { response, error } = await this.upload(
