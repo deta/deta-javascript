@@ -4,6 +4,11 @@ if (isNode()) {
   globalThis.fetch = require('node-fetch');
 }
 
+interface RequestInit {
+  payload?: any;
+  headers?: { [key: string]: string };
+}
+
 interface Request {
   body?: any;
   method?: string;
@@ -96,16 +101,12 @@ export default class Requests {
    * @param {[key: string]: string} headers
    * @returns {Promise<Response>}
    */
-  public post(
-    uri: string,
-    payload?: any,
-    headers?: { [key: string]: string }
-  ): Promise<Response> {
+  public post(uri: string, init: RequestInit): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
-      body: payload,
+      body: init.payload,
       method: Method.Post,
-      headers: { ...this.requestConfig.headers, ...headers },
+      headers: { ...this.requestConfig.headers, ...init.headers },
     });
   }
 

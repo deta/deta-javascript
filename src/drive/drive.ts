@@ -220,9 +220,10 @@ export default class Drive {
 
     const { response, error } = await this.requests.post(
       DriveApi.INIT_CHUNK_UPLOAD.replace(':name', name),
-      null,
       {
-        'Content-Type': contentType,
+        headers: {
+          'Content-Type': contentType,
+        },
       }
     );
     if (error) {
@@ -241,9 +242,11 @@ export default class Drive {
         DriveApi.UPLOAD_FILE_CHUNK.replace(':uid', uid)
           .replace(':name', name)
           .replace(':part', part.toString()),
-        chunk,
         {
-          'Content-Type': contentType,
+          payload: chunk,
+          headers: {
+            'Content-Type': contentType,
+          },
         }
       );
       if (err) {

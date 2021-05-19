@@ -127,7 +127,9 @@ export default class Base {
     const { status, response, error } = await this.requests.post(
       BaseApi.INSERT_ITEMS,
       {
-        item: payload,
+        payload: {
+          item: payload,
+        },
       }
     );
     if (error && status === 409) {
@@ -258,7 +260,7 @@ export default class Base {
 
       const { response, error } = await this.requests.post(
         BaseApi.QUERY_ITEMS,
-        payload
+        { payload }
       );
       if (error) {
         throw error;
