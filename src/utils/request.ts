@@ -146,16 +146,8 @@ export default class Requests {
         method: config.method,
       });
 
-      let data;
-
-      // check if the response is json
-      try {
-        data = await response.clone().json();
-      } catch (err) {
-        data = await response.clone().blob();
-      }
-
       if (!response.ok) {
+        const data = await response.json();
         const message = data?.errors?.[0] || 'Something went wrong';
         return {
           status: response.status,
@@ -163,7 +155,15 @@ export default class Requests {
         };
       }
 
-      return { status: response.status, response: data };
+      const blob = await response.blob();
+
+      // check if the response is json
+      try {
+        const json = JSON.parse(await blob.text());
+        return { status: response.status, response: json };
+      } catch (err) {
+        return { status: response.status, response: blob };
+      }
     } catch (err) {
       return { status: 500, error: new Error('Something went wrong') };
     }
