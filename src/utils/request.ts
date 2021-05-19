@@ -18,11 +18,11 @@ interface Response {
 }
 
 enum Method {
-  Put = 'put',
-  Get = 'get',
-  Post = 'post',
-  Patch = 'patch',
-  Delete = 'delete',
+  Put = 'PUT',
+  Get = 'GET',
+  Post = 'POST',
+  Patch = 'PATCH',
+  Delete = 'DELETE',
 }
 
 export default class Requests {
