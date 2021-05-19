@@ -44,7 +44,6 @@ export default [
         browser: false,
       }),
       commonjs({ extensions: ['.ts'] }),
-      terser(),
     ],
   },
   {
@@ -65,13 +64,13 @@ export default [
         browser: true,
       }),
       commonjs({ extensions: ['.ts'] }),
-      terser(),
       replace({
         'process.env.DETA_PROJECT_KEY': JSON.stringify(''),
         'process.env.DETA_BASE_HOST': JSON.stringify(''),
         'process.env.DETA_DRIVE_HOST': JSON.stringify(''),
         preventAssignment: true,
       }),
+      terser(),
     ],
   },
 ];
