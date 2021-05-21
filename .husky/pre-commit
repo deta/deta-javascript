@@ -1,7 +1,7 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn lint:fix
-yarn format
-yarn test
+npm run lint:fix
+npm run format
+npm run test
 git add .
