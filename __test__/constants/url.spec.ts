@@ -2,10 +2,7 @@ import url from '../../src/constants/url';
 
 describe('base url', () => {
   it.each([
-    [
-      'database.deta.sh/v1',
-      'https://database.deta.sh/v1/:project_id/:base_name',
-    ],
+    ['database.deta.sh', 'https://database.deta.sh/v1/:project_id/:base_name'],
     ['   ', 'https://database.deta.sh/v1/:project_id/:base_name'],
     ['', 'https://database.deta.sh/v1/:project_id/:base_name'],
   ])('passed host path `url.base("%s")`', (host, expected) => {
@@ -14,7 +11,7 @@ describe('base url', () => {
   });
 
   it('host path set in environment variable', () => {
-    process.env.DETA_BASE_HOST = 'database.deta.sh/v1';
+    process.env.DETA_BASE_HOST = 'database.deta.sh';
     const path = url.base();
     expect(path).toEqual('https://database.deta.sh/v1/:project_id/:base_name');
   });
@@ -27,7 +24,7 @@ describe('base url', () => {
 
 describe('drive url', () => {
   it.each([
-    ['drive.deta.sh/v1', 'https://drive.deta.sh/v1/:project_id/:drive_name'],
+    ['drive.deta.sh', 'https://drive.deta.sh/v1/:project_id/:drive_name'],
     ['   ', 'https://drive.deta.sh/v1/:project_id/:drive_name'],
     ['', 'https://drive.deta.sh/v1/:project_id/:drive_name'],
   ])('passed host path `url.drive("%s")`', (host, expected) => {
@@ -36,7 +33,7 @@ describe('drive url', () => {
   });
 
   it('host path set in environment variable', () => {
-    process.env.DETA_DRIVE_HOST = 'drive.deta.sh/v1';
+    process.env.DETA_DRIVE_HOST = 'drive.deta.sh';
     const path = url.drive();
     expect(path).toEqual('https://drive.deta.sh/v1/:project_id/:drive_name');
   });

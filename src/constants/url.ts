@@ -1,6 +1,6 @@
 const url = {
-  BASE: `https://:host/:project_id/:base_name`,
-  DRIVE: `https://:host/:project_id/:drive_name`,
+  BASE: `https://:host/v1/:project_id/:base_name`,
+  DRIVE: `https://:host/v1/:project_id/:drive_name`,
 };
 
 /**
@@ -11,7 +11,7 @@ const url = {
  */
 function base(host?: string): string {
   const hostPath =
-    host?.trim() || process.env.DETA_BASE_HOST?.trim() || 'database.deta.sh/v1';
+    host?.trim() || process.env.DETA_BASE_HOST?.trim() || 'database.deta.sh';
   return url.BASE.replace(':host', hostPath);
 }
 
@@ -23,7 +23,7 @@ function base(host?: string): string {
  */
 function drive(host?: string): string {
   const hostPath =
-    host?.trim() || process.env.DETA_DRIVE_HOST?.trim() || 'drive.deta.sh/v1';
+    host?.trim() || process.env.DETA_DRIVE_HOST?.trim() || 'drive.deta.sh';
   return url.DRIVE.replace(':host', hostPath);
 }
 
