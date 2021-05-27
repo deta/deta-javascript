@@ -17,27 +17,29 @@ export default class Deta {
    * Base returns instance of Base class
    *
    * @param {string} baseName
+   * @param {string} [host]
    * @returns {BaseClass}
    */
-  public Base(baseName: string): BaseClass {
+  public Base(baseName: string, host?: string): BaseClass {
     const name = baseName.trim();
     if (!name) {
       throw new Error('Base name is not defined');
     }
-    return new BaseClass(this.projectKey, name);
+    return new BaseClass(this.projectKey, name, host);
   }
 
   /**
    * Drive returns instance of Drive class
    *
    * @param {string} driveName
+   * @param {string} [host]
    * @returns {DriveClass}
    */
-  public Drive(driveName: string): DriveClass {
+  public Drive(driveName: string, host?: string): DriveClass {
     const name = driveName.trim();
     if (!name) {
       throw new Error('Drive name is not defined');
     }
-    return new DriveClass(this.projectKey, name);
+    return new DriveClass(this.projectKey, name, host);
   }
 }
