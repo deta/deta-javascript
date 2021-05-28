@@ -52,7 +52,7 @@ export default [
       {
         name: 'deta',
         file: pkg.browser,
-        format: 'iife', // browser
+        format: 'umd', // browser
         banner,
       },
     ],
