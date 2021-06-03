@@ -1,4 +1,4 @@
-import { Deta } from '../../src/index';
+import { Deta } from '../../src/index.node';
 
 const projectKey = process.env.PROJECT_KEY || '';
 const driveName = process.env.DRIVE_NAME || '';
