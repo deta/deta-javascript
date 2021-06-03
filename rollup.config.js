@@ -24,11 +24,6 @@ export default [
         format: 'cjs', // commonJS
         banner,
       },
-      {
-        file: pkg.module,
-        format: 'es', // ES Modules
-        banner,
-      },
     ],
     external: [
       ...Object.keys(pkg.dependencies || {}),

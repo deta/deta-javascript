@@ -1,5 +1,10 @@
-let app; // eslint-disable-line
+import fetch from 'node-fetch';
 
+// fetch polyfill for nodejs
+// @ts-ignore
+globalThis.fetch = fetch;
+
+let app; // eslint-disable-line
 let App; // eslint-disable-line
 
 try {
