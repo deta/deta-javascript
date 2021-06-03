@@ -1,4 +1,4 @@
-import { Deta, Base, Drive } from '../src/index';
+import { Deta, Base, Drive } from '../src/index.node';
 
 const projectKey = process.env.PROJECT_KEY || '';
 const dbName = process.env.DB_NAME || '';
