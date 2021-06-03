@@ -26,9 +26,10 @@ export default class Base {
    *
    * @param {string} projectKey
    * @param {string} baseName
+   * @param {string} [host]
    */
-  constructor(projectKey: string, baseName: string) {
-    const baseURL = url.BASE_HOST_URL.replace(':base_name', baseName);
+  constructor(projectKey: string, baseName: string, host?: string) {
+    const baseURL = url.base(host).replace(':base_name', baseName);
     this.requests = new Requests(projectKey, baseURL);
     this.util = new BaseUtils();
   }

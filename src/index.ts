@@ -20,18 +20,20 @@ export function Deta(projectKey?: string): DetaClass {
  * Base returns instance of Base class
  *
  * @param {string} baseName
+ * @param {string} [host]
  * @returns {BaseClass}
  */
-export function Base(baseName: string): BaseClass {
-  return Deta().Base(baseName);
+export function Base(baseName: string, host?: string): BaseClass {
+  return Deta().Base(baseName, host);
 }
 
 /**
  * Drive returns instance of Drive class
  *
  * @param {string} driveName
+ * @param {string} [host]
  * @returns {DriveClass}
  */
-export function Drive(driveName: string): DriveClass {
-  return Deta().Drive(driveName);
+export function Drive(driveName: string, host?: string): DriveClass {
+  return Deta().Drive(driveName, host);
 }
