@@ -6,8 +6,6 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 import pkg from './package.json';
 
-const input = './src/index.ts';
-
 const banner = `
 /**
  * @license
@@ -19,7 +17,7 @@ const banner = `
 
 export default [
   {
-    input,
+    input: './src/index.node.ts',
     output: [
       {
         file: pkg.main,
@@ -47,7 +45,7 @@ export default [
     ],
   },
   {
-    input,
+    input: './src/index.browser.ts',
     output: [
       {
         name: 'deta',

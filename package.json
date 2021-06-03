@@ -1,6 +1,6 @@
 {
-  "name": "deta",
-  "version": "0.0.11",
+  "name": "test-deta1",
+  "version": "0.0.20",
   "description": "Deta library for Javascript",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -17,7 +17,7 @@
   "files": [
     "dist"
   ],
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/types/index.node.d.ts",
   "author": "Deta",
   "license": "MIT",
   "repository": {
