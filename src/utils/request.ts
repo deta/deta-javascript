@@ -1,9 +1,3 @@
-import { isNode } from './node';
-
-if (isNode()) {
-  globalThis.fetch = require('node-fetch');
-}
-
 interface RequestInit {
   payload?: any;
   headers?: { [key: string]: string };

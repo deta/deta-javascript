@@ -24,9 +24,10 @@ export default class Drive {
    *
    * @param {string} projectKey
    * @param {string} driveName
+   * @param {string} [host]
    */
-  constructor(projectKey: string, driveName: string) {
-    const baseURL = url.DRIVE_HOST_URL.replace(':drive_name', driveName);
+  constructor(projectKey: string, driveName: string, host?: string) {
+    const baseURL = url.drive(host).replace(':drive_name', driveName);
     this.requests = new Requests(projectKey, baseURL);
   }
 
