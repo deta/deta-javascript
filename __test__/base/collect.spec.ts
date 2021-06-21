@@ -83,195 +83,255 @@ describe('Base#collect', () => {
   it.each([
     [
       { 'user_age?lt': 30 },
-      [
-        {
-          key: 'collect-key-1',
-          name: 'Wesley',
-          user_age: 27,
-          hometown: 'San Francisco',
-          email: 'wesley@deta.sh',
+      {
+        paging: {
+          size: 1,
         },
-      ],
+        items: [
+          {
+            key: 'collect-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+        ],
+      },
     ],
     [
       { user_age: 27 },
-      [
-        {
-          key: 'collect-key-1',
-          name: 'Wesley',
-          user_age: 27,
-          hometown: 'San Francisco',
-          email: 'wesley@deta.sh',
+      {
+        paging: {
+          size: 1,
         },
-      ],
+        items: [
+          {
+            key: 'collect-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+        ],
+      },
     ],
     [
       { user_age: 27, name: 'Wesley' },
-      [
-        {
-          key: 'collect-key-1',
-          name: 'Wesley',
-          user_age: 27,
-          hometown: 'San Francisco',
-          email: 'wesley@deta.sh',
+      {
+        paging: {
+          size: 1,
         },
-      ],
+        items: [
+          {
+            key: 'collect-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+        ],
+      },
     ],
     [
       { 'user_age?gt': 27 },
-      [
-        {
-          key: 'collect-key-2',
-          name: 'Beverly',
-          user_age: 51,
-          hometown: 'Copernicus City',
-          email: 'beverly@deta.sh',
+      {
+        paging: {
+          size: 2,
         },
-        {
-          key: 'collect-key-3',
-          name: 'Kevin Garnett',
-          user_age: 43,
-          hometown: 'Greenville',
-          email: 'kevin@email.com',
-        },
-      ],
+        items: [
+          {
+            key: 'collect-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'collect-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
     ],
     [
       { 'user_age?lte': 43 },
-      [
-        {
-          key: 'collect-key-1',
-          name: 'Wesley',
-          user_age: 27,
-          hometown: 'San Francisco',
-          email: 'wesley@deta.sh',
+      {
+        paging: {
+          size: 2,
         },
-        {
-          key: 'collect-key-3',
-          name: 'Kevin Garnett',
-          user_age: 43,
-          hometown: 'Greenville',
-          email: 'kevin@email.com',
-        },
-      ],
+        items: [
+          {
+            key: 'collect-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'collect-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
     ],
     [
       { 'user_age?gte': 43 },
-      [
-        {
-          key: 'collect-key-2',
-          name: 'Beverly',
-          user_age: 51,
-          hometown: 'Copernicus City',
-          email: 'beverly@deta.sh',
+      {
+        paging: {
+          size: 2,
         },
-        {
-          key: 'collect-key-3',
-          name: 'Kevin Garnett',
-          user_age: 43,
-          hometown: 'Greenville',
-          email: 'kevin@email.com',
-        },
-      ],
+        items: [
+          {
+            key: 'collect-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'collect-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
     ],
     [
       { 'hometown?pfx': 'San' },
-      [
-        {
-          key: 'collect-key-1',
-          name: 'Wesley',
-          user_age: 27,
-          hometown: 'San Francisco',
-          email: 'wesley@deta.sh',
+      {
+        paging: {
+          size: 1,
         },
-      ],
+        items: [
+          {
+            key: 'collect-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+        ],
+      },
     ],
     [
       { 'user_age?r': [20, 45] },
-      [
-        {
-          key: 'collect-key-1',
-          name: 'Wesley',
-          user_age: 27,
-          hometown: 'San Francisco',
-          email: 'wesley@deta.sh',
+      {
+        paging: {
+          size: 2,
         },
-        {
-          key: 'collect-key-3',
-          name: 'Kevin Garnett',
-          user_age: 43,
-          hometown: 'Greenville',
-          email: 'kevin@email.com',
-        },
-      ],
+        items: [
+          {
+            key: 'collect-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'collect-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
     ],
     [
       { 'email?contains': '@email.com' },
-      [
-        {
-          key: 'collect-key-3',
-          name: 'Kevin Garnett',
-          user_age: 43,
-          hometown: 'Greenville',
-          email: 'kevin@email.com',
+      {
+        paging: {
+          size: 1,
         },
-      ],
+        items: [
+          {
+            key: 'collect-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
     ],
     [
       { 'email?not_contains': '@deta.sh' },
-      [
-        {
-          key: 'collect-key-3',
-          name: 'Kevin Garnett',
-          user_age: 43,
-          hometown: 'Greenville',
-          email: 'kevin@email.com',
+      {
+        paging: {
+          size: 1,
         },
-      ],
+        items: [
+          {
+            key: 'collect-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
     ],
     [
       [{ 'user_age?gt': 50 }, { hometown: 'Greenville' }],
-      [
-        {
-          key: 'collect-key-2',
-          name: 'Beverly',
-          user_age: 51,
-          hometown: 'Copernicus City',
-          email: 'beverly@deta.sh',
+      {
+        paging: {
+          size: 2,
         },
-        {
-          key: 'collect-key-3',
-          name: 'Kevin Garnett',
-          user_age: 43,
-          hometown: 'Greenville',
-          email: 'kevin@email.com',
-        },
-      ],
+        items: [
+          {
+            key: 'collect-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'collect-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
     ],
     [
       { 'user_age?ne': 51 },
-      [
-        {
-          key: 'collect-key-1',
-          name: 'Wesley',
-          user_age: 27,
-          hometown: 'San Francisco',
-          email: 'wesley@deta.sh',
+      {
+        paging: {
+          size: 2,
         },
-        {
-          key: 'collect-key-3',
-          name: 'Kevin Garnett',
-          user_age: 43,
-          hometown: 'Greenville',
-          email: 'kevin@email.com',
-        },
-      ],
+        items: [
+          {
+            key: 'collect-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'collect-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
     ],
   ])(
     'collect data by using collect query `collect(%p)`',
     async (query, expected) => {
-      const { items } = await db.collect(query);
-      expect(items).toEqual(expected);
+      const res = await db.collect(query);
+      expect(res).toEqual(expected);
     }
   );
 
@@ -352,6 +412,32 @@ describe('Base#collect', () => {
             user_age: 43,
             hometown: 'Greenville',
             email: 'kevin@email.com',
+          },
+        ],
+      },
+    ],
+    [
+      [],
+      { limit: 2 },
+      {
+        paging: {
+          size: 2,
+          last: 'collect-key-2',
+        },
+        items: [
+          {
+            key: 'collect-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'collect-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
           },
         ],
       },
