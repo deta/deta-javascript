@@ -51,7 +51,7 @@ export default class Requests {
    * @param {any} payload
    * @returns {Promise<Response>}
    */
-  public put(uri: string, payload: any): Promise<Response> {
+  public async put(uri: string, payload: any): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
       body: payload,
@@ -95,7 +95,7 @@ export default class Requests {
    * @param {[key: string]: string} headers
    * @returns {Promise<Response>}
    */
-  public post(uri: string, init: RequestInit): Promise<Response> {
+  public async post(uri: string, init: RequestInit): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
       body: init.payload,
@@ -111,7 +111,7 @@ export default class Requests {
    * @param {any} payload
    * @returns {Promise<Response>}
    */
-  public patch(uri: string, payload?: any): Promise<Response> {
+  public async patch(uri: string, payload?: any): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
       body: payload,
@@ -119,7 +119,7 @@ export default class Requests {
     });
   }
 
-  static async fetch(url: string, config: Request): Promise<Response> {
+  private static async fetch(url: string, config: Request): Promise<Response> {
     try {
       const body =
         config.body instanceof Uint8Array

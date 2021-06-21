@@ -9,7 +9,8 @@
     "lint": "eslint -c .eslintrc.js . --ext .ts",
     "lint:fix": "eslint -c .eslintrc.js . --ext .ts --fix",
     "test": "jest --config jest.config.json --runInBand",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "t": "jest --config jest.config.json --runInBand __test__/base/collect.spec.ts"
   },
   "main": "./dist/index.js",
   "browser": "./dist/index.browser.js",

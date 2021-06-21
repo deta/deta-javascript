@@ -14,7 +14,10 @@ import {
   InsertResponse,
   UpdateResponse,
   PutManyResponse,
+  CollectResponse,
 } from '../types/base/response';
+
+import { CollectOptions } from '../types/base/request';
 
 export default class Base {
   private requests: Requests;
@@ -278,5 +281,34 @@ export default class Base {
         break;
       }
     }
+  }
+
+  /**
+   * collect data from base
+   *
+   * @param {DetaType} [query]
+   * @param {CollectOptions} [options]
+   * @returns {Promise<CollectResponse>}
+   */
+  public async collect(
+    query: DetaType = [],
+    options?: CollectOptions
+  ): Promise<CollectResponse> {
+    const { limit = 1000, last = '' } = options || {};
+
+    const payload = {
+      query: Array.isArray(query) ? query : [query],
+      limit,
+      last,
+    };
+
+    const { response, error } = await this.requests.post(BaseApi.QUERY_ITEMS, {
+      payload,
+    });
+    if (error) {
+      throw error;
+    }
+
+    return response;
   }
 }

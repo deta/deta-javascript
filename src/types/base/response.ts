@@ -17,3 +17,11 @@ export interface PutManyResponse {
 export type UpdateResponse = NullType;
 
 export type FetchResponse = AsyncGenerator<ObjectType[], void, void>;
+
+export interface CollectResponse {
+  items: ObjectType[];
+  paging: {
+    size: number;
+    last: string;
+  };
+}
