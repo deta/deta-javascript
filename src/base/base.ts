@@ -3,6 +3,7 @@ import url from '../constants/url';
 import Requests from '../utils/request';
 import { BaseApi } from '../constants/api';
 import { isObject } from '../utils/object';
+import { FetchOptions } from '../types/base/request';
 import { Action, ActionTypes } from '../types/action';
 import { DetaType, ArrayType, ObjectType } from '../types/basic';
 
@@ -14,10 +15,7 @@ import {
   InsertResponse,
   UpdateResponse,
   PutManyResponse,
-  CollectResponse,
 } from '../types/base/response';
-
-import { CollectOptions } from '../types/base/request';
 
 export default class Base {
   private requests: Requests;
@@ -243,57 +241,13 @@ export default class Base {
    * fetch data from base
    *
    * @param {DetaType} [query]
-   * @param {number} [pages]
-   * @param {number} [buffer]
-   * @returns {FetchResponse}
+   * @param {FetchOptions} [options]
+   * @returns {Promise<FetchResponse>}
    */
-  public async *fetch(
+  public async fetch(
     query: DetaType = [],
-    pages: number = 10,
-    buffer?: number
-  ): FetchResponse {
-    let lastValue = '';
-    const q = Array.isArray(query) ? query : [query];
-
-    for (let idx = 0; idx < pages; idx += 1) {
-      const payload = {
-        query: q,
-        limit: buffer,
-        last: lastValue,
-      };
-
-      const { response, error } = await this.requests.post(
-        BaseApi.QUERY_ITEMS,
-        { payload }
-      );
-      if (error) {
-        throw error;
-      }
-
-      const { paging, items } = response;
-      const { last } = paging;
-
-      yield items;
-
-      lastValue = last;
-
-      if (!lastValue) {
-        break;
-      }
-    }
-  }
-
-  /**
-   * collect data from base
-   *
-   * @param {DetaType} [query]
-   * @param {CollectOptions} [options]
-   * @returns {Promise<CollectResponse>}
-   */
-  public async collect(
-    query: DetaType = [],
-    options?: CollectOptions
-  ): Promise<CollectResponse> {
+    options?: FetchOptions
+  ): Promise<FetchResponse> {
     const { limit = 1000, last = '' } = options || {};
 
     const payload = {
@@ -309,6 +263,9 @@ export default class Base {
       throw error;
     }
 
-    return response;
+    const { items, paging } = response;
+    const { size: count, last: resLast } = paging;
+
+    return { items, count, last: resLast };
   }
 }
