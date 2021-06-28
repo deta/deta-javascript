@@ -303,6 +303,14 @@ describe('Base#fetch', () => {
         ],
       },
     ],
+    [
+      { fetch_does_not_exist: 'fetch_value_does_not_exist' },
+      {
+        count: 0,
+        last: undefined,
+        items: [],
+      },
+    ],
   ])('fetch data by using fetch query `fetch(%p)`', async (query, expected) => {
     const res = await db.fetch(query);
     expect(res).toEqual(expected);
