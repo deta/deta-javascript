@@ -20,4 +20,6 @@ export type ArrayType = Array<
   ArrayType | ObjectType | BasicType | NullType | UndefinedType
 >;
 
+export type CompositeType = ArrayType | ObjectType;
+
 export type DetaType = ArrayType | ObjectType | BasicType;

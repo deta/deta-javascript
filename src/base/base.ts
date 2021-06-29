@@ -5,7 +5,7 @@ import { BaseApi } from '../constants/api';
 import { isObject } from '../utils/object';
 import { FetchOptions } from '../types/base/request';
 import { Action, ActionTypes } from '../types/action';
-import { DetaType, ArrayType, ObjectType } from '../types/basic';
+import { DetaType, CompositeType, ArrayType, ObjectType } from '../types/basic';
 
 import {
   GetResponse,
@@ -240,12 +240,12 @@ export default class Base {
   /**
    * fetch data from base
    *
-   * @param {DetaType} [query]
+   * @param {CompositeType} [query]
    * @param {FetchOptions} [options]
    * @returns {Promise<FetchResponse>}
    */
   public async fetch(
-    query: DetaType = [],
+    query: CompositeType = [],
     options?: FetchOptions
   ): Promise<FetchResponse> {
     const { limit = 1000, last = '' } = options || {};

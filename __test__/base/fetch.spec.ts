@@ -311,6 +311,64 @@ describe('Base#fetch', () => {
         items: [],
       },
     ],
+    [
+      {},
+      {
+        count: 3,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'fetch-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
+    ],
+    [
+      [],
+      {
+        count: 3,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'fetch-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
+    ],
   ])('fetch data by using fetch query `fetch(%p)`', async (query, expected) => {
     const res = await db.fetch(query);
     expect(res).toEqual(expected);
@@ -409,6 +467,90 @@ describe('Base#fetch', () => {
             user_age: 51,
             hometown: 'Copernicus City',
             email: 'beverly@deta.sh',
+          },
+        ],
+      },
+    ],
+    [
+      {},
+      { limit: 2 },
+      {
+        count: 2,
+        last: 'fetch-key-2',
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+        ],
+      },
+    ],
+    [
+      {},
+      { limit: 3 },
+      {
+        count: 3,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'fetch-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
+    ],
+    [
+      [],
+      { limit: 3 },
+      {
+        count: 3,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'fetch-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
           },
         ],
       },
