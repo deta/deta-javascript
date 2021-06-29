@@ -3,8 +3,9 @@ import url from '../constants/url';
 import Requests from '../utils/request';
 import { BaseApi } from '../constants/api';
 import { isObject } from '../utils/object';
+import { FetchOptions } from '../types/base/request';
 import { Action, ActionTypes } from '../types/action';
-import { DetaType, ArrayType, ObjectType } from '../types/basic';
+import { DetaType, CompositeType, ArrayType, ObjectType } from '../types/basic';
 
 import {
   GetResponse,
@@ -239,44 +240,32 @@ export default class Base {
   /**
    * fetch data from base
    *
-   * @param {DetaType} [query]
-   * @param {number} [pages]
-   * @param {number} [buffer]
-   * @returns {FetchResponse}
+   * @param {CompositeType} [query]
+   * @param {FetchOptions} [options]
+   * @returns {Promise<FetchResponse>}
    */
-  public async *fetch(
-    query: DetaType = [],
-    pages: number = 10,
-    buffer?: number
-  ): FetchResponse {
-    let lastValue = '';
-    const q = Array.isArray(query) ? query : [query];
+  public async fetch(
+    query: CompositeType = [],
+    options?: FetchOptions
+  ): Promise<FetchResponse> {
+    const { limit = 1000, last = '' } = options || {};
 
-    for (let idx = 0; idx < pages; idx += 1) {
-      const payload = {
-        query: q,
-        limit: buffer,
-        last: lastValue,
-      };
+    const payload = {
+      query: Array.isArray(query) ? query : [query],
+      limit,
+      last,
+    };
 
-      const { response, error } = await this.requests.post(
-        BaseApi.QUERY_ITEMS,
-        { payload }
-      );
-      if (error) {
-        throw error;
-      }
-
-      const { paging, items } = response;
-      const { last } = paging;
-
-      yield items;
-
-      lastValue = last;
-
-      if (!lastValue) {
-        break;
-      }
+    const { response, error } = await this.requests.post(BaseApi.QUERY_ITEMS, {
+      payload,
+    });
+    if (error) {
+      throw error;
     }
+
+    const { items, paging } = response;
+    const { size: count, last: resLast } = paging;
+
+    return { items, count, last: resLast };
   }
 }

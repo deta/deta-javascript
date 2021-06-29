@@ -16,4 +16,8 @@ export interface PutManyResponse {
 
 export type UpdateResponse = NullType;
 
-export type FetchResponse = AsyncGenerator<ObjectType[], void, void>;
+export interface FetchResponse {
+  items: ObjectType[];
+  count: number;
+  last?: string;
+}
