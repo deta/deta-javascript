@@ -1,5 +1,6 @@
 import BaseUtils from './utils';
 import url from '../constants/url';
+import { KeyType } from '../types/key';
 import Requests from '../utils/request';
 import { BaseApi } from '../constants/api';
 import { isObject } from '../utils/object';
@@ -25,13 +26,24 @@ export default class Base {
   /**
    * Base constructor
    *
-   * @param {string} projectKey
+   * @param {string} key
+   * @param {KeyType} type
+   * @param {string} projectId
    * @param {string} baseName
    * @param {string} [host]
    */
-  constructor(projectKey: string, baseName: string, host?: string) {
-    const baseURL = url.base(host).replace(':base_name', baseName);
-    this.requests = new Requests(projectKey, baseURL);
+  constructor(
+    key: string,
+    type: KeyType,
+    projectId: string,
+    baseName: string,
+    host?: string
+  ) {
+    const baseURL = url
+      .base(host)
+      .replace(':base_name', baseName)
+      .replace(':project_id', projectId);
+    this.requests = new Requests(key, type, baseURL);
     this.util = new BaseUtils();
   }
 

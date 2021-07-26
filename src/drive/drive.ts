@@ -1,5 +1,6 @@
 import url from '../constants/url';
 import { isNode } from '../utils/node';
+import { KeyType } from '../types/key';
 import Requests from '../utils/request';
 import { isString } from '../utils/string';
 import { DriveApi } from '../constants/api';
@@ -22,13 +23,24 @@ export default class Drive {
   /**
    * Drive constructor
    *
-   * @param {string} projectKey
+   * @param {string} key
+   * @param {KeyType} type
+   * @param {string} projectId
    * @param {string} driveName
    * @param {string} [host]
    */
-  constructor(projectKey: string, driveName: string, host?: string) {
-    const baseURL = url.drive(host).replace(':drive_name', driveName);
-    this.requests = new Requests(projectKey, baseURL);
+  constructor(
+    key: string,
+    type: KeyType,
+    projectId: string,
+    driveName: string,
+    host?: string
+  ) {
+    const baseURL = url
+      .drive(host)
+      .replace(':drive_name', driveName)
+      .replace(':project_id', projectId);
+    this.requests = new Requests(key, type, baseURL);
   }
 
   /**
