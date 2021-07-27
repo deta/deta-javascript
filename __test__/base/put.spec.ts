@@ -1,9 +1,6 @@
-import { Deta } from '../../src/index.node';
+import { Base } from '../utils/deta';
 
-const projectKey = process.env.PROJECT_KEY || '';
-const dbName = process.env.DB_NAME || '';
-
-const db = Deta(projectKey).Base(dbName);
+const db = Base();
 
 describe('Base#put', () => {
   it.each([

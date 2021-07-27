@@ -1,9 +1,6 @@
-import { Deta } from '../../src/index.node';
+import { Drive } from '../utils/deta';
 
-const projectKey = process.env.PROJECT_KEY || '';
-const driveName = process.env.DRIVE_NAME || '';
-
-const drive = Deta(projectKey).Drive(driveName);
+const drive = Drive();
 
 describe('Drive#get', () => {
   beforeAll(async () => {

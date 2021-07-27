@@ -1,3 +1,5 @@
+import { KeyType } from '../types/key';
+
 interface RequestInit {
   payload?: any;
   headers?: { [key: string]: string };
@@ -30,17 +32,17 @@ export default class Requests {
   /**
    * Requests constructor
    *
-   * @param {string} projectKey
+   * @param {string} key
+   * @param {KeyType} type
    * @param {string} baseURL
    */
-  constructor(projectKey: string, baseURL: string) {
-    const [projectId] = projectKey.split('_');
-
+  constructor(key: string, type: KeyType, baseURL: string) {
     this.requestConfig = {
-      baseURL: baseURL.replace(':project_id', projectId),
-      headers: {
-        'X-API-Key': projectKey,
-      },
+      baseURL,
+      headers:
+        type === KeyType.AuthToken
+          ? { Authorization: key }
+          : { 'X-API-Key': key },
     };
   }
 

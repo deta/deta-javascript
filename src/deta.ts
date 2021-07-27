@@ -1,16 +1,25 @@
 import BaseClass from './base';
 import DriveClass from './drive';
+import { KeyType } from './types/key';
 
 export default class Deta {
-  private projectKey: string;
+  private key: string;
+
+  private type: KeyType;
+
+  private projectId: string;
 
   /**
    * Deta constructor
    *
-   * @param {string} projectKey
+   * @param {string} key
+   * @param {KeyType} type
+   * @param {string} projectId
    */
-  constructor(projectKey: string) {
-    this.projectKey = projectKey;
+  constructor(key: string, type: KeyType, projectId: string) {
+    this.key = key;
+    this.type = type;
+    this.projectId = projectId;
   }
 
   /**
@@ -25,7 +34,7 @@ export default class Deta {
     if (!name) {
       throw new Error('Base name is not defined');
     }
-    return new BaseClass(this.projectKey, name, host);
+    return new BaseClass(this.key, this.type, this.projectId, name, host);
   }
 
   /**
@@ -40,6 +49,6 @@ export default class Deta {
     if (!name) {
       throw new Error('Drive name is not defined');
     }
-    return new DriveClass(this.projectKey, name, host);
+    return new DriveClass(this.key, this.type, this.projectId, name, host);
   }
 }
