@@ -204,12 +204,9 @@ export default class Base {
     updates: ObjectType,
     key: string
   ): Promise<UpdateResponse> {
-    let trimmedKey;
-    if (key) {
-      trimmedKey = key.trim();
-      if (!trimmedKey.length) {
-        throw new Error('Key is empty');
-      }
+    const trimmedKey = key?.trim();
+    if (!trimmedKey) {
+      throw new Error('Key is empty');
     } else {
       throw new Error('Key is empty');
     }
