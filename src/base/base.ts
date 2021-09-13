@@ -79,12 +79,9 @@ export default class Base {
    * @returns {Promise<GetResponse>}
    */
   public async get(key: string): Promise<GetResponse> {
-    let trimmedKey;
-    if (key) {
-      trimmedKey = key.trim();
-      if (!trimmedKey.length) {
-        throw new Error('Key is empty');
-      }
+    const trimmedKey = key?.trim();
+    if (!trimmedKey) {
+      throw new Error('Key is empty');
     } else {
       throw new Error('Key is empty');
     }
@@ -113,12 +110,9 @@ export default class Base {
    * @returns {Promise<DeleteResponse>}
    */
   public async delete(key: string): Promise<DeleteResponse> {
-    let trimmedKey;
-    if (key) {
-      trimmedKey = key.trim();
-      if (!trimmedKey.length) {
-        throw new Error('Key is empty');
-      }
+    const trimmedKey = key?.trim();
+    if (!trimmedKey) {
+      throw new Error('Key is empty');
     } else {
       throw new Error('Key is empty');
     }
