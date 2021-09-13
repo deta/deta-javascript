@@ -82,10 +82,7 @@ export default class Base {
     const trimmedKey = key?.trim();
     if (!trimmedKey) {
       throw new Error('Key is empty');
-    } else {
-      throw new Error('Key is empty');
     }
-
     const encodedKey = encodeURIComponent(trimmedKey);
 
     const { status, response, error } = await this.requests.get(
@@ -113,10 +110,7 @@ export default class Base {
     const trimmedKey = key?.trim();
     if (!trimmedKey) {
       throw new Error('Key is empty');
-    } else {
-      throw new Error('Key is empty');
     }
-
     const encodedKey = encodeURIComponent(trimmedKey);
 
     const { error } = await this.requests.delete(
@@ -207,10 +201,7 @@ export default class Base {
     const trimmedKey = key?.trim();
     if (!trimmedKey) {
       throw new Error('Key is empty');
-    } else {
-      throw new Error('Key is empty');
     }
-
     const payload: {
       set: ObjectType;
       increment: ObjectType;
