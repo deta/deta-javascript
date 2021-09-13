@@ -79,8 +79,8 @@ export default class Base {
    * @returns {Promise<GetResponse>}
    */
   public async get(key: string): Promise<GetResponse> {
-    const trimmedKey = key.trim();
-    if (!trimmedKey.length) {
+    const trimmedKey = key?.trim();
+    if (!trimmedKey) {
       throw new Error('Key is empty');
     }
 
@@ -108,8 +108,8 @@ export default class Base {
    * @returns {Promise<DeleteResponse>}
    */
   public async delete(key: string): Promise<DeleteResponse> {
-    const trimmedKey = key.trim();
-    if (!trimmedKey.length) {
+    const trimmedKey = key?.trim();
+    if (!trimmedKey) {
       throw new Error('Key is empty');
     }
 
@@ -200,8 +200,8 @@ export default class Base {
     updates: ObjectType,
     key: string
   ): Promise<UpdateResponse> {
-    const trimmedKey = key.trim();
-    if (!trimmedKey.length) {
+    const trimmedKey = key?.trim();
+    if (!trimmedKey) {
       throw new Error('Key is empty');
     }
 

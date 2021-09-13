@@ -43,9 +43,11 @@ describe('Base#get', () => {
   it.each([
     ['   ', new Error('Key is empty')],
     ['', new Error('Key is empty')],
+    [null, new Error('Key is empty')],
+    [undefined, new Error('Key is empty')],
   ])('get data by using invalid key `get("%s")`', async (key, expected) => {
     try {
-      const data = await db.get(key);
+      const data = await db.get(key as string);
       expect(data).toBeNull();
     } catch (err) {
       expect(err).toEqual(expected);

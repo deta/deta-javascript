@@ -46,11 +46,13 @@ describe('Base#delete', () => {
   it.each([
     ['   ', new Error('Key is empty')],
     ['', new Error('Key is empty')],
+    [null, new Error('Key is empty')],
+    [undefined, new Error('Key is empty')],
   ])(
     'delete data by using invalid key `delete("%s")`',
     async (key, expected) => {
       try {
-        const data = await db.delete(key);
+        const data = await db.delete(key as string);
         expect(data).toBeNull();
       } catch (err) {
         expect(err).toEqual(expected);

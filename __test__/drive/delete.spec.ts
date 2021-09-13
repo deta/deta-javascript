@@ -24,11 +24,13 @@ describe('Drive#delete', () => {
   it.each([
     ['   ', new Error('Name is empty')],
     ['', new Error('Name is empty')],
+    [null, new Error('Name is empty')],
+    [undefined, new Error('Name is empty')],
   ])(
     'delete file by using invalid name `delete("%s")`',
     async (name, expected) => {
       try {
-        const data = await drive.delete(name);
+        const data = await drive.delete(name as string);
         expect(data).toEqual(name);
       } catch (err) {
         expect(err).toEqual(expected);

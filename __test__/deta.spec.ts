@@ -8,9 +8,11 @@ describe('Deta', () => {
   it.each([
     ['   ', new Error('Project key is not defined')],
     ['', new Error('Project key is not defined')],
+    [null, new Error('Project key is not defined')],
+    [undefined, new Error('Project key is not defined')],
   ])('invalid project key `Deta("%s")`', (name, expected) => {
     try {
-      const deta = Deta(name);
+      const deta = Deta(name as string);
       expect(deta).not.toBeNull();
     } catch (err) {
       expect(err).toEqual(expected);
@@ -22,9 +24,11 @@ describe('Deta#Base', () => {
   it.each([
     ['   ', new Error('Base name is not defined')],
     ['', new Error('Base name is not defined')],
+    [null, new Error('Base name is not defined')],
+    [undefined, new Error('Base name is not defined')],
   ])('invalid base name `Base("%s")`', (name, expected) => {
     try {
-      const base = Deta('test').Base(name);
+      const base = Deta('test').Base(name as string);
       expect(base).not.toBeNull();
     } catch (err) {
       expect(err).toEqual(expected);
@@ -65,9 +69,11 @@ describe('Deta#Drive', () => {
   it.each([
     ['   ', new Error('Drive name is not defined')],
     ['', new Error('Drive name is not defined')],
+    [null, new Error('Drive name is not defined')],
+    [undefined, new Error('Drive name is not defined')],
   ])('invalid drive name `Drive("%s")`', (name, expected) => {
     try {
-      const drive = Deta('test').Drive(name);
+      const drive = Deta('test').Drive(name as string);
       expect(drive).not.toBeNull();
     } catch (err) {
       expect(err).toEqual(expected);
@@ -104,10 +110,12 @@ describe('Base', () => {
   it.each([
     ['   ', new Error('Base name is not defined')],
     ['', new Error('Base name is not defined')],
+    [null, new Error('Base name is not defined')],
+    [undefined, new Error('Base name is not defined')],
   ])('invalid base name `Base("%s")`', (name, expected) => {
     try {
       process.env.DETA_PROJECT_KEY = 'test';
-      const base = Base(name);
+      const base = Base(name as string);
       expect(base).not.toBeNull();
     } catch (err) {
       expect(err).toEqual(expected);
@@ -159,10 +167,12 @@ describe('Drive', () => {
   it.each([
     ['   ', new Error('Drive name is not defined')],
     ['', new Error('Drive name is not defined')],
+    [null, new Error('Drive name is not defined')],
+    [undefined, new Error('Drive name is not defined')],
   ])('invalid drive name `Drive("%s")`', (name, expected) => {
     try {
       process.env.DETA_PROJECT_KEY = 'test';
-      const drive = Drive(name);
+      const drive = Drive(name as string);
       expect(drive).not.toBeNull();
     } catch (err) {
       expect(err).toEqual(expected);

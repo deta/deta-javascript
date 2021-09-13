@@ -108,4 +108,21 @@ describe('Base#update', () => {
     const updatedData = await db.get(key);
     expect(updatedData).toEqual(expected);
   });
+
+  it.each([
+    [{}, '   ', new Error('Key is empty')],
+    [{}, '', new Error('Key is empty')],
+    [{}, null, new Error('Key is empty')],
+    [{}, undefined, new Error('Key is empty')],
+  ])(
+    'update data by using invalid key `update(%p, "%s")`',
+    async (updates, key, expected) => {
+      try {
+        const data = await db.update(updates, key as string);
+        expect(data).toBeNull();
+      } catch (err) {
+        expect(err).toEqual(expected);
+      }
+    }
+  );
 });

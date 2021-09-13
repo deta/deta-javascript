@@ -67,6 +67,22 @@ describe('Drive#put', () => {
       new Error('Name is empty'),
     ],
     [
+      null,
+      {
+        data: 'Hello world',
+        contentType: 'text/plain',
+      },
+      new Error('Name is empty'),
+    ],
+    [
+      undefined,
+      {
+        data: 'Hello world',
+        contentType: 'text/plain',
+      },
+      new Error('Name is empty'),
+    ],
+    [
       'put-data-2',
       {
         path: '__test__/files/logo.svg',
@@ -96,7 +112,7 @@ describe('Drive#put', () => {
     'put file by using invalid name or body `put("%s", %p)`',
     async (name, body, expected) => {
       try {
-        const data = await drive.put(name, body);
+        const data = await drive.put(name as string, body);
         expect(data).not.toBeNull();
       } catch (err) {
         expect(err).toEqual(expected);
