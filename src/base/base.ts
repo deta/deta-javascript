@@ -79,11 +79,10 @@ export default class Base {
    * @returns {Promise<GetResponse>}
    */
   public async get(key: string): Promise<GetResponse> {
-    const trimmedKey = key.trim();
-    if (!trimmedKey.length) {
+    const trimmedKey = key?.trim();
+    if (!trimmedKey) {
       throw new Error('Key is empty');
     }
-
     const encodedKey = encodeURIComponent(trimmedKey);
 
     const { status, response, error } = await this.requests.get(
@@ -108,11 +107,10 @@ export default class Base {
    * @returns {Promise<DeleteResponse>}
    */
   public async delete(key: string): Promise<DeleteResponse> {
-    const trimmedKey = key.trim();
-    if (!trimmedKey.length) {
+    const trimmedKey = key?.trim();
+    if (!trimmedKey) {
       throw new Error('Key is empty');
     }
-
     const encodedKey = encodeURIComponent(trimmedKey);
 
     const { error } = await this.requests.delete(
@@ -200,11 +198,10 @@ export default class Base {
     updates: ObjectType,
     key: string
   ): Promise<UpdateResponse> {
-    const trimmedKey = key.trim();
-    if (!trimmedKey.length) {
+    const trimmedKey = key?.trim();
+    if (!trimmedKey) {
       throw new Error('Key is empty');
     }
-
     const payload: {
       set: ObjectType;
       increment: ObjectType;
