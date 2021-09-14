@@ -30,7 +30,7 @@ export default class Deta {
    * @returns {BaseClass}
    */
   public Base(baseName: string, host?: string): BaseClass {
-    const name = baseName.trim();
+    const name = baseName?.trim();
     if (!name) {
       throw new Error('Base name is not defined');
     }
@@ -45,7 +45,7 @@ export default class Deta {
    * @returns {DriveClass}
    */
   public Drive(driveName: string, host?: string): DriveClass {
-    const name = driveName.trim();
+    const name = driveName?.trim();
     if (!name) {
       throw new Error('Drive name is not defined');
     }

@@ -28,9 +28,11 @@ describe('Drive#get', () => {
   it.each([
     ['   ', new Error('Name is empty')],
     ['', new Error('Name is empty')],
+    [null, new Error('Name is empty')],
+    [undefined, new Error('Name is empty')],
   ])('get file by using invalid name `get("%s")`', async (name, expected) => {
     try {
-      const data = await drive.get(name);
+      const data = await drive.get(name as string);
       expect(data).not.toBeNull();
     } catch (err) {
       expect(err).toEqual(expected);

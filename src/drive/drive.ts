@@ -50,8 +50,8 @@ export default class Drive {
    * @returns {Promise<GetResponse>}
    */
   public async get(name: string): Promise<GetResponse> {
-    const trimmedName = name.trim();
-    if (!trimmedName.length) {
+    const trimmedName = name?.trim();
+    if (!trimmedName) {
       throw new Error('Name is empty');
     }
 
@@ -78,8 +78,8 @@ export default class Drive {
    * @returns {Promise<DeleteResponse>}
    */
   public async delete(name: string): Promise<DeleteResponse> {
-    const trimmedName = name.trim();
-    if (!trimmedName.length) {
+    const trimmedName = name?.trim();
+    if (!trimmedName) {
       throw new Error('Name is empty');
     }
 
@@ -162,8 +162,8 @@ export default class Drive {
    * @returns {Promise<PutResponse>}
    */
   public async put(name: string, options: PutOptions): Promise<PutResponse> {
-    const trimmedName = name.trim();
-    if (!trimmedName.length) {
+    const trimmedName = name?.trim();
+    if (!trimmedName) {
       throw new Error('Name is empty');
     }
 
