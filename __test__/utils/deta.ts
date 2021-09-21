@@ -4,6 +4,12 @@ export function Drive() {
   const projectKey = process.env.PROJECT_KEY || '';
   const driveName = process.env.DRIVE_NAME || '';
 
+  if (process.env.USE_AUTH_TOKEN === 'true') {
+    // auth token is only supported by base
+    const token = process.env.AUTH_TOKEN || '';
+    return Deta(projectKey.split('_')[0], token).Drive(driveName);
+  }
+
   return Deta(projectKey).Drive(driveName);
 }
 

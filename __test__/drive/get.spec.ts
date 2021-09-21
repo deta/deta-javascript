@@ -18,6 +18,7 @@ describe('Drive#get', () => {
   it('get file by using name', async () => {
     const data = await drive.get('get-a');
     expect(data).not.toBeNull();
+    expect(data?.type).toEqual('binary/octet-stream');
   });
 
   it('get file by using name that does not exists on drive', async () => {
