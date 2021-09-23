@@ -63,39 +63,99 @@ describe('Drive#list', () => {
     expect(data).toEqual(expected);
   });
 
-  it('list files using limit', async () => {
-    const expected = {
-      paging: {
-        size: 1,
-        last: 'list-a',
+  it.each([
+    [
+      { limit: 1 },
+      {
+        paging: {
+          size: 1,
+          last: 'list-a',
+        },
+        names: ['list-a'],
       },
-      names: ['list-a'],
-    };
-    const data = await drive.list({ limit: 1 });
-    expect(data).toEqual(expected);
-  });
-
-  it('list files using prefix', async () => {
-    const expected = {
-      paging: {
-        size: 2,
-        last: 'list-b',
+    ],
+    [
+      { limit: 2, prefix: 'list-' },
+      {
+        paging: {
+          size: 2,
+          last: 'list-b',
+        },
+        names: ['list-a', 'list-b'],
       },
-      names: ['list-a', 'list-b'],
-    };
-    const data = await drive.list({ limit: 2, prefix: 'list-' });
-    expect(data).toEqual(expected);
-  });
-
-  it('list files using last', async () => {
-    const expected = {
-      names: ['list/child/b'],
-    };
-    const data = await drive.list({
-      limit: 2,
-      prefix: 'list',
-      last: 'list/child/a',
-    });
+    ],
+    [
+      {
+        limit: 2,
+        prefix: 'list',
+        last: 'list/child/a',
+      },
+      {
+        names: ['list/child/b'],
+      },
+    ],
+    [
+      {
+        limit: 2,
+        prefix: 'list',
+        last: 'list/child/a',
+        recursive: true,
+      },
+      {
+        names: ['list/child/b'],
+      },
+    ],
+    [
+      {
+        prefix: 'list/',
+        recursive: false,
+      },
+      {
+        names: ['list/a', 'list/b', 'list/child/'],
+      },
+    ],
+    [
+      {
+        limit: 2,
+        prefix: 'list/',
+        recursive: false,
+      },
+      {
+        paging: {
+          size: 2,
+          last: 'list/b',
+        },
+        names: ['list/a', 'list/b'],
+      },
+    ],
+    [
+      {
+        limit: 1,
+        last: 'list/a',
+        prefix: 'list/',
+        recursive: false,
+      },
+      {
+        paging: {
+          size: 1,
+          last: 'list/b',
+        },
+        names: ['list/b'],
+      },
+    ],
+    [
+      {
+        limit: 2,
+        last: 'list/a',
+        prefix: 'list/',
+        recursive: false,
+      },
+      {
+        names: ['list/b', 'list/child/'],
+      },
+    ],
+  ])('list files `get(%p)`', async (option, expected) => {
+    const data = await drive.list(option);
     expect(data).toEqual(expected);
   });
 });
