@@ -4,21 +4,44 @@ const drive = Drive();
 
 describe('Drive#list', () => {
   beforeAll(async () => {
-    const inputs = [['list-a'], ['list-b'], ['list-c']];
+    const inputs = [
+      'list-a',
+      'list-b',
+      'list-c',
+      'list/a',
+      'list/b',
+      'list/child/a',
+      'list/child/b',
+    ];
 
     const promises = inputs.map(async (input) => {
-      const [name] = input;
-      const data = await drive.put(name, { data: 'hello' });
-      expect(data).toEqual(name);
+      const data = await drive.put(input, { data: 'hello' });
+      expect(data).toEqual(input);
     });
 
     await Promise.all(promises);
   });
 
   afterAll(async () => {
-    const names = ['list-a', 'list-b', 'list-c'];
+    const names = [
+      'list-a',
+      'list-b',
+      'list-c',
+      'list/a',
+      'list/b',
+      'list/child/a',
+      'list/child/b',
+    ];
     const expected = {
-      deleted: ['list-a', 'list-b', 'list-c'],
+      deleted: [
+        'list-a',
+        'list-b',
+        'list-c',
+        'list/a',
+        'list/b',
+        'list/child/a',
+        'list/child/b',
+      ],
     };
     const data = await drive.deleteMany(names);
     expect(data).toEqual(expected);
@@ -26,7 +49,15 @@ describe('Drive#list', () => {
 
   it('list files', async () => {
     const expected = {
-      names: ['list-a', 'list-b', 'list-c'],
+      names: [
+        'list-a',
+        'list-b',
+        'list-c',
+        'list/a',
+        'list/b',
+        'list/child/a',
+        'list/child/b',
+      ],
     };
     const data = await drive.list();
     expect(data).toEqual(expected);
@@ -58,9 +89,13 @@ describe('Drive#list', () => {
 
   it('list files using last', async () => {
     const expected = {
-      names: ['list-c'],
+      names: ['list/child/b'],
     };
-    const data = await drive.list({ limit: 2, prefix: 'list', last: 'list-b' });
+    const data = await drive.list({
+      limit: 2,
+      prefix: 'list',
+      last: 'list/child/a',
+    });
     expect(data).toEqual(expected);
   });
 });
