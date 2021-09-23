@@ -5,6 +5,7 @@ export interface PutOptions {
 }
 
 export interface ListOptions {
+  recursive?: boolean;
   prefix?: string;
   limit?: number;
   last?: string;

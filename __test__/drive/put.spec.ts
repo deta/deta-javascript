@@ -4,11 +4,26 @@ const drive = Drive();
 
 describe('Drive#put', () => {
   afterAll(async () => {
-    const names = ['put-test.svg', 'put-data', 'put-data-1', 'put-data-2'];
+    const names = [
+      'put-data',
+      'put-data-1',
+      'put-data-2',
+      'put-data/a',
+      'put-data/child/a',
+      'put-test.svg',
+    ];
     const expected = {
-      deleted: ['put-test.svg', 'put-data', 'put-data-1', 'put-data-2'],
+      deleted: [
+        'put-data',
+        'put-data-1',
+        'put-data-2',
+        'put-data/a',
+        'put-data/child/a',
+        'put-test.svg',
+      ],
     };
     const data = await drive.deleteMany(names);
+    data.deleted.sort();
     expect(data).toEqual(expected);
   });
 
@@ -21,14 +36,16 @@ describe('Drive#put', () => {
     expect(data).toEqual(name);
   });
 
-  it('put data', async () => {
-    const name = 'put-data';
-    const data = await drive.put(name, {
-      data: 'Hello world',
-    });
+  it.each(['put-data', 'put-data/a', 'put-data/child/a'])(
+    'put data `put("%s")`',
+    async (name) => {
+      const data = await drive.put(name as string, {
+        data: 'Hello world',
+      });
 
-    expect(data).toEqual(name);
-  });
+      expect(data).toEqual(name);
+    }
+  );
 
   it('put data with contentType', async () => {
     const name = 'put-data-1';
