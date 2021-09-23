@@ -154,6 +154,24 @@ describe('Drive#list', () => {
         names: ['list/b', 'list/child/'],
       },
     ],
+    [
+      {
+        prefix: 'list',
+        recursive: false,
+      },
+      {
+        names: ['list-a', 'list-b', 'list-c', 'list/'],
+      },
+    ],
+    [
+      {
+        prefix: '/list',
+        recursive: false,
+      },
+      {
+        names: [],
+      },
+    ],
   ])('list files `get(%p)`', async (option, expected) => {
     const data = await drive.list(option);
     expect(data).toEqual(expected);
