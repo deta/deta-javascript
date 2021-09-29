@@ -140,10 +140,16 @@ export default class Drive {
    * @returns {Promise<ListResponse>}
    */
   public async list(options?: ListOptions): Promise<ListResponse> {
-    const { prefix = '', limit = 1000, last = '' } = options || {};
+    const {
+      recursive = true,
+      prefix = '',
+      limit = 1000,
+      last = '',
+    } = options || {};
 
     const { response, error } = await this.requests.get(
       DriveApi.LIST_FILES.replace(':prefix', prefix)
+        .replace(':recursive', recursive.toString())
         .replace(':limit', limit.toString())
         .replace(':last', last)
     );
@@ -243,7 +249,7 @@ export default class Drive {
       return { error };
     }
 
-    const { upload_id: uid } = response;
+    const { upload_id: uid, name: resName } = response;
 
     let part = 1;
     for (let idx = 0; idx < contentLength; idx += chunkSize) {
@@ -276,6 +282,6 @@ export default class Drive {
       return { error: err };
     }
 
-    return { response: name };
+    return { response: resName };
   }
 }

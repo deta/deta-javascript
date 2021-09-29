@@ -4,27 +4,42 @@ const drive = Drive();
 
 describe('Drive#get', () => {
   beforeAll(async () => {
-    const name = 'get-a';
-    const data = await drive.put(name, { data: 'hello' });
-    expect(data).toEqual(name);
+    const inputs = ['get-a', 'get/a', 'get/child/a'];
+
+    const promises = inputs.map(async (input) => {
+      const data = await drive.put(input, { data: 'hello' });
+      expect(data).toEqual(input);
+    });
+
+    await Promise.all(promises);
   });
 
   afterAll(async () => {
-    const name = 'get-a';
-    const data = await drive.delete(name);
-    expect(data).toEqual(name);
+    const inputs = ['get-a', 'get/a', 'get/child/a'];
+
+    const promises = inputs.map(async (input) => {
+      const data = await drive.delete(input);
+      expect(data).toEqual(input);
+    });
+
+    await Promise.all(promises);
   });
 
-  it('get file by using name', async () => {
-    const data = await drive.get('get-a');
-    expect(data).not.toBeNull();
-    expect(data?.type).toEqual('binary/octet-stream');
-  });
+  it.each(['get-a', 'get/a', 'get/child/a'])(
+    'get file by using name `get("%s")`',
+    async (name) => {
+      const data = await drive.get(name as string);
+      expect(data).not.toBeNull();
+    }
+  );
 
-  it('get file by using name that does not exists on drive', async () => {
-    const data = await drive.get('get-aa');
-    expect(data).toBeNull();
-  });
+  it.each(['get-aa', 'get/aa', 'get/child/aa'])(
+    'get file by using name that does not exists on drive `get("%s")`',
+    async (name) => {
+      const data = await drive.get(name as string);
+      expect(data).toBeNull();
+    }
+  );
 
   it.each([
     ['   ', new Error('Name is empty')],
