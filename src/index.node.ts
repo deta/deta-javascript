@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import { DetaLib, DetaLibApp } from './types/libjs';
 
 // fetch polyfill for nodejs
 if (!globalThis.fetch) {
@@ -6,8 +7,8 @@ if (!globalThis.fetch) {
   globalThis.fetch = fetch;
 }
 
-let app; // eslint-disable-line
-let App; // eslint-disable-line
+let app: DetaLib;
+let App: DetaLibApp;
 
 try {
   const { App: lib } = require('detalib');
