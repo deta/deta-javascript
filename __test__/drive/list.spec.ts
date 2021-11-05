@@ -44,7 +44,7 @@ describe('Drive#list', () => {
       ],
     };
     const data = await drive.deleteMany(names);
-    expect(data).toEqual(expected);
+    expect(data.deleted).toEqual(expect.arrayContaining(expected.deleted));
   });
 
   it('list files', async () => {

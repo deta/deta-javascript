@@ -20,8 +20,7 @@ describe('Drive#deleteMany', () => {
       deleted: ['delete-many-a', 'delete-many/a', 'delete-many/child/a'],
     };
     const data = await drive.deleteMany(names);
-    data.deleted.sort();
-    expect(data).toEqual(expected);
+    expect(data.deleted).toEqual(expect.arrayContaining(expected.deleted));
   });
 
   it('deleteMany files by using names that does not exists on drive', async () => {
@@ -30,8 +29,7 @@ describe('Drive#deleteMany', () => {
       deleted: ['delete-many-aa', 'delete-many/aa'],
     };
     const data = await drive.deleteMany(names);
-    data.deleted.sort();
-    expect(data).toEqual(expected);
+    expect(data.deleted).toEqual(expect.arrayContaining(expected.deleted));
   });
 
   it('deleteMany files by using valid and invalid names', async () => {
@@ -44,8 +42,7 @@ describe('Drive#deleteMany', () => {
       },
     };
     const data = await drive.deleteMany(names);
-    data.deleted.sort();
-    expect(data).toEqual(expected);
+    expect(data.deleted).toEqual(expect.arrayContaining(expected.deleted));
   });
 
   it.each([
