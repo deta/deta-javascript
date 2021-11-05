@@ -102,7 +102,7 @@ describe('Deta#Drive', () => {
       deleted: ['deta-drive-test', 'deta-drive-test1'],
     };
     const data = await drive.deleteMany(names);
-    expect(data).toEqual(expected);
+    expect(data.deleted).toEqual(expect.arrayContaining(expected.deleted));
   });
 });
 
@@ -212,6 +212,6 @@ describe('Drive', () => {
       deleted: ['drive-test', 'drive-test1'],
     };
     const data = await drive.deleteMany(names);
-    expect(data).toEqual(expected);
+    expect(data.deleted).toEqual(expect.arrayContaining(expected.deleted));
   });
 });

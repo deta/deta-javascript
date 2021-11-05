@@ -7,8 +7,8 @@ if (!globalThis.fetch) {
   globalThis.fetch = fetch;
 }
 
-let app: DetaLib;
-let App: DetaLibApp;
+let app: DetaLib; // eslint-disable-line import/no-mutable-exports
+let App: DetaLibApp; // eslint-disable-line import/no-mutable-exports
 
 try {
   const { App: lib } = require('detalib');

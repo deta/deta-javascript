@@ -23,8 +23,7 @@ describe('Drive#put', () => {
       ],
     };
     const data = await drive.deleteMany(names);
-    data.deleted.sort();
-    expect(data).toEqual(expected);
+    expect(data.deleted).toEqual(expect.arrayContaining(expected.deleted));
   });
 
   it('put file', async () => {
