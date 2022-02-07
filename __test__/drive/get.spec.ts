@@ -3,11 +3,13 @@ import { Drive } from '../utils/deta';
 const drive = Drive();
 
 describe('Drive#get', () => {
+  const fileContent = '{"hello":"world"}';
+
   beforeAll(async () => {
     const inputs = ['get-a', 'get/a', 'get/child/a'];
 
     const promises = inputs.map(async (input) => {
-      const data = await drive.put(input, { data: 'hello' });
+      const data = await drive.put(input, { data: fileContent });
       expect(data).toEqual(input);
     });
 
@@ -30,6 +32,8 @@ describe('Drive#get', () => {
     async (name) => {
       const data = await drive.get(name as string);
       expect(data).not.toBeNull();
+      const value = await data?.text();
+      expect(value).toEqual(fileContent);
     }
   );
 

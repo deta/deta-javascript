@@ -5,11 +5,16 @@ interface RequestInit {
   headers?: { [key: string]: string };
 }
 
-interface Request {
+interface GetConfig {
+  blobResponse: boolean;
+}
+
+interface RequestConfig {
   body?: any;
   method?: string;
   baseURL?: string;
   headers?: { [key: string]: string };
+  blobResponse?: boolean;
 }
 
 interface Response {
@@ -27,7 +32,7 @@ enum Method {
 }
 
 export default class Requests {
-  private requestConfig: Request;
+  private requestConfig: RequestConfig;
 
   /**
    * Requests constructor
@@ -82,10 +87,11 @@ export default class Requests {
    * @param {string} uri
    * @returns {Promise<Response>}
    */
-  public async get(uri: string): Promise<Response> {
+  public async get(uri: string, config?: GetConfig): Promise<Response> {
     return Requests.fetch(uri, {
       ...this.requestConfig,
       method: Method.Get,
+      blobResponse: config?.blobResponse,
     });
   }
 
@@ -121,7 +127,10 @@ export default class Requests {
     });
   }
 
-  private static async fetch(url: string, config: Request): Promise<Response> {
+  private static async fetch(
+    url: string,
+    config: RequestConfig
+  ): Promise<Response> {
     try {
       const body =
         config.body instanceof Uint8Array
@@ -151,15 +160,13 @@ export default class Requests {
         };
       }
 
-      const blob = await response.blob();
-
-      // check if the response is json
-      try {
-        const json = JSON.parse(await blob.text());
-        return { status: response.status, response: json };
-      } catch (err) {
+      if (config.blobResponse) {
+        const blob = await response.blob();
         return { status: response.status, response: blob };
       }
+
+      const json = await response.json();
+      return { status: response.status, response: json };
     } catch (err) {
       return { status: 500, error: new Error('Something went wrong') };
     }
