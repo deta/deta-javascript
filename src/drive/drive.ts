@@ -58,7 +58,10 @@ export default class Drive {
     const encodedName = encodeURIComponent(trimmedName);
 
     const { status, response, error } = await this.requests.get(
-      DriveApi.GET_FILE.replace(':name', encodedName)
+      DriveApi.GET_FILE.replace(':name', encodedName),
+      {
+        blobResponse: true,
+      }
     );
     if (status === 404 && error) {
       return null;
