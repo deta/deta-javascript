@@ -48,7 +48,7 @@ export function getTTL(
   }
 
   if (expireIn && expireAt) {
-    return { error: new Error("can't set both expireIn and expireAt") };
+    return { error: new Error("can't set both expireIn and expireAt options") };
   }
 
   if (expireIn) {
