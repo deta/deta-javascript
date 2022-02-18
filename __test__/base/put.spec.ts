@@ -1,18 +1,17 @@
 import { Base } from '../utils/deta';
 import { Day } from '../../src/utils/date';
 import { BaseGeneral } from '../../src/constants/general';
+import { mockSystemTime, useRealTime } from '../utils/general';
 
 const db = Base();
 
 describe('Base#put', () => {
   beforeAll(() => {
-    jest.useFakeTimers('modern');
-    const date = new Date();
-    jest.setSystemTime(date);
+    mockSystemTime();
   });
 
   afterAll(() => {
-    jest.useRealTimers();
+    useRealTime();
   });
 
   it.each([

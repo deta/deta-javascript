@@ -1,9 +1,13 @@
 import { Base } from '../utils/deta';
+import { Day } from '../../src/utils/date';
+import { BaseGeneral } from '../../src/constants/general';
+import { mockSystemTime, useRealTime } from '../utils/general';
 
 const db = Base();
 
 describe('Base#update', () => {
   beforeAll(async () => {
+    mockSystemTime();
     const inputs = [
       [
         {
@@ -45,6 +49,7 @@ describe('Base#update', () => {
   });
 
   afterAll(async () => {
+    useRealTime();
     const inputs = [['update-user-a']];
 
     const promises = inputs.map(async (input) => {
@@ -69,6 +74,7 @@ describe('Base#update', () => {
         dislikes: db.util.prepend('action'),
       },
       'update-user-a',
+      undefined,
       {
         key: 'update-user-a',
         username: 'jimmy',
@@ -89,6 +95,7 @@ describe('Base#update', () => {
         dislikes: db.util.prepend(['romcom']),
       },
       'update-user-a',
+      {},
       {
         key: 'update-user-a',
         username: 'jimmy',
@@ -102,12 +109,74 @@ describe('Base#update', () => {
         purchases: 4,
       },
     ],
-  ])('update data `update(%p, "%s")`', async (updates, key, expected) => {
-    const data = await db.update(updates, key);
-    expect(data).toBeNull();
-    const updatedData = await db.get(key);
-    expect(updatedData).toEqual(expected);
-  });
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      {
+        expireIn: 5,
+      },
+      {
+        key: 'update-user-a',
+        username: 'jimmy',
+        profile: {
+          age: 33,
+          active: true,
+          email: 'jimmy@deta.sh',
+        },
+        likes: ['anime', 'ramen', 'momo'],
+        dislikes: ['romcom', 'action', 'comedy'],
+        purchases: 5,
+        [BaseGeneral.TTL_ATTRIBUTE]: new Day().addSeconds(5).getEpochSeconds(),
+      },
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      {
+        expireAt: new Date(),
+      },
+      {
+        key: 'update-user-a',
+        username: 'jimmy',
+        profile: {
+          age: 33,
+          active: true,
+          email: 'jimmy@deta.sh',
+        },
+        likes: ['anime', 'ramen', 'momo'],
+        dislikes: ['romcom', 'action', 'comedy'],
+        purchases: 6,
+        [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
+      },
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      {
+        expireIn: 5,
+        expireAt: new Date(),
+      },
+      new Error("can't set both expireIn and expireAt options"),
+    ],
+  ])(
+    'update data `update(%p, "%s", %p)`',
+    async (updates, key, options, expected) => {
+      try {
+        const data = await db.update(updates, key, options);
+        expect(data).toBeNull();
+        const updatedData = await db.get(key);
+        expect(updatedData).toEqual(expected);
+      } catch (err) {
+        expect(err).toEqual(expected);
+      }
+    }
+  );
 
   it.each([
     [{}, '   ', new Error('Key is empty')],
