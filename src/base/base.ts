@@ -1,12 +1,18 @@
-import BaseUtils from './utils';
 import url from '../constants/url';
 import { KeyType } from '../types/key';
 import Requests from '../utils/request';
 import { BaseApi } from '../constants/api';
 import { isObject } from '../utils/object';
-import { FetchOptions } from '../types/base/request';
+import BaseUtils, { getTTL } from './utils';
+import { BaseGeneral } from '../constants/general';
 import { Action, ActionTypes } from '../types/action';
 import { DetaType, CompositeType, ArrayType, ObjectType } from '../types/basic';
+import {
+  PutOptions,
+  FetchOptions,
+  UpdateOptions,
+  PutManyOptions,
+} from '../types/base/request';
 
 import {
   GetResponse,
@@ -54,11 +60,24 @@ export default class Base {
    * @param {string} [key]
    * @returns {Promise<PutResponse>}
    */
-  public async put(data: DetaType, key?: string): Promise<PutResponse> {
+  public async put(
+    data: DetaType,
+    key?: string,
+    options?: PutOptions
+  ): Promise<PutResponse> {
+    const { ttl, error: ttlError } = getTTL(
+      options?.expireIn,
+      options?.expireAt
+    );
+    if (ttlError) {
+      throw ttlError;
+    }
+
     const payload: ObjectType[] = [
       {
         ...(isObject(data) ? (data as ObjectType) : { value: data }),
         ...(key && { key }),
+        ...(ttl && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }),
       },
     ];
 
@@ -160,7 +179,10 @@ export default class Base {
    * @param {DetaType[]} items
    * @returns {Promise<PutManyResponse>}
    */
-  public async putMany(items: DetaType[]): Promise<PutManyResponse> {
+  public async putMany(
+    items: DetaType[],
+    options?: PutManyOptions
+  ): Promise<PutManyResponse> {
     if (!(items instanceof Array)) {
       throw new Error('Items must be an array');
     }
@@ -173,9 +195,18 @@ export default class Base {
       throw new Error("We can't put more than 25 items at a time");
     }
 
-    const payload: ObjectType[] = items.map((item) =>
-      isObject(item) ? (item as ObjectType) : { value: item }
+    const { ttl, error: ttlError } = getTTL(
+      options?.expireIn,
+      options?.expireAt
     );
+    if (ttlError) {
+      throw ttlError;
+    }
+
+    const payload: ObjectType[] = items.map((item) => {
+      const newItem = isObject(item) ? (item as ObjectType) : { value: item };
+      return { ...newItem, ...(ttl && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }) };
+    });
 
     const { response, error } = await this.requests.put(BaseApi.PUT_ITEMS, {
       items: payload,
@@ -196,12 +227,22 @@ export default class Base {
    */
   public async update(
     updates: ObjectType,
-    key: string
+    key: string,
+    options?: UpdateOptions
   ): Promise<UpdateResponse> {
     const trimmedKey = key?.trim();
     if (!trimmedKey) {
       throw new Error('Key is empty');
     }
+
+    const { ttl, error: ttlError } = getTTL(
+      options?.expireIn,
+      options?.expireAt
+    );
+    if (ttlError) {
+      throw ttlError;
+    }
+
     const payload: {
       set: ObjectType;
       increment: ObjectType;
@@ -209,7 +250,9 @@ export default class Base {
       prepend: ObjectType;
       delete: ArrayType;
     } = {
-      set: {},
+      set: {
+        ...(ttl && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }),
+      },
       increment: {},
       append: {},
       prepend: {},
