@@ -1,8 +1,19 @@
 import { Base } from '../utils/deta';
+import { Day } from '../../src/utils/date';
+import { BaseGeneral } from '../../src/constants/general';
+import { mockSystemTime, useRealTime } from '../utils/general';
 
 const db = Base();
 
 describe('Base#putMany', () => {
+  beforeAll(() => {
+    mockSystemTime();
+  });
+
+  afterAll(() => {
+    useRealTime();
+  });
+
   it.each([
     [
       [
@@ -35,6 +46,88 @@ describe('Base#putMany', () => {
       expect(deleteRes).toBeNull();
     });
   });
+
+  it.each([
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      {
+        expireIn: 233,
+      },
+      {
+        processed: {
+          items: [
+            {
+              hometown: 'Copernicus City',
+              name: 'Beverly',
+              [BaseGeneral.TTL_ATTRIBUTE]: new Day()
+                .addSeconds(233)
+                .getEpochSeconds(),
+            },
+            {
+              hometown: 'New York',
+              name: 'Jon',
+              [BaseGeneral.TTL_ATTRIBUTE]: new Day()
+                .addSeconds(233)
+                .getEpochSeconds(),
+            },
+          ],
+        },
+      },
+    ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      {
+        expireAt: new Date(),
+      },
+      {
+        processed: {
+          items: [
+            {
+              hometown: 'Copernicus City',
+              name: 'Beverly',
+              [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
+            },
+            {
+              hometown: 'New York',
+              name: 'Jon',
+              [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
+            },
+          ],
+        },
+      },
+    ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      {
+        expireIn: 5,
+        expireAt: new Date(),
+      },
+      new Error("can't set both expireIn and expireAt options"),
+    ],
+  ])(
+    'putMany items, with options `putMany(%p, %p)`',
+    async (items, options, expected) => {
+      try {
+        const data = await db.putMany(items, options);
+        expect(data).toMatchObject(expected);
+        data?.processed?.items.forEach(async (val: any) => {
+          const deleteRes = await db.delete(val.key);
+          expect(deleteRes).toBeNull();
+        });
+      } catch (err) {
+        expect(err).toEqual(expected);
+      }
+    }
+  );
 
   it.each([
     [
