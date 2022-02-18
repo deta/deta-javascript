@@ -28,6 +28,6 @@ export class Day {
    * @returns {number}
    */
   public getEpochSeconds(): number {
-    return this.date.getTime() / 1000;
+    return Math.floor(this.date.getTime() / 1000.0);
   }
 }
