@@ -11,6 +11,7 @@ import {
   PutOptions,
   FetchOptions,
   UpdateOptions,
+  InsertOptions,
   PutManyOptions,
 } from '../types/base/request';
 
@@ -149,10 +150,23 @@ export default class Base {
    * @param {string} [key]
    * @returns {Promise<InsertResponse>}
    */
-  public async insert(data: DetaType, key?: string): Promise<InsertResponse> {
+  public async insert(
+    data: DetaType,
+    key?: string,
+    options?: InsertOptions
+  ): Promise<InsertResponse> {
+    const { ttl, error: ttlError } = getTTL(
+      options?.expireIn,
+      options?.expireAt
+    );
+    if (ttlError) {
+      throw ttlError;
+    }
+
     const payload: ObjectType = {
       ...(isObject(data) ? (data as ObjectType) : { value: data }),
       ...(key && { key }),
+      ...(ttl && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }),
     };
 
     const { status, response, error } = await this.requests.post(

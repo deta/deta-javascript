@@ -8,6 +8,11 @@ export interface PutOptions {
   expireAt?: Date | number;
 }
 
+export interface InsertOptions {
+  expireIn?: number;
+  expireAt?: Date | number;
+}
+
 export interface PutManyOptions {
   expireIn?: number;
   expireAt?: Date | number;
