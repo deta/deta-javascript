@@ -1,5 +1,5 @@
 /**
- * isNumber returns if the provided value is of type number
+ * isNumber returns true if the provided value is of type number
  *
  * @param {any} value
  * @returns {boolean}

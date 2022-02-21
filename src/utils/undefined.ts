@@ -1,5 +1,5 @@
 /**
- * isUndefined returns if the provided value is of type undefined
+ * isUndefined returns true if the provided value is of type undefined
  *
  * @param {any} value
  * @returns {boolean}

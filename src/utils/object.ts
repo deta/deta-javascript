@@ -1,5 +1,5 @@
 /**
- * isObject returns if the provided value is an instance of object
+ * isObject returns true if the provided value is an instance of object
  *
  * @param {any} value
  * @returns {boolean}
