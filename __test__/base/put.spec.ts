@@ -101,11 +101,71 @@ describe('Base#put', () => {
       { expireIn: 5, expireAt: new Date() },
       new Error("can't set both expireIn and expireAt options"),
     ],
+    [
+      ['a', 'b', 'c'],
+      'put_my_abc',
+      { expireIn: null, expireAt: null },
+      new Error("can't set both expireIn and expireAt options"),
+    ],
+    [
+      ['a', 'b', 'c'],
+      'put_my_abc',
+      { expireIn: 'invalid' },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      ['a', 'b', 'c'],
+      'put_my_abc',
+      { expireIn: new Date() },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      ['a', 'b', 'c'],
+      'put_my_abc',
+      { expireIn: null },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      ['a', 'b', 'c'],
+      'put_my_abc',
+      { expireIn: {} },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      ['a', 'b', 'c'],
+      'put_my_abc',
+      { expireIn: [] },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      ['a', 'b', 'c'],
+      'put_my_abc',
+      { expireAt: 'invalid' },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      ['a', 'b', 'c'],
+      'put_my_abc',
+      { expireAt: null },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      ['a', 'b', 'c'],
+      'put_my_abc',
+      { expireAt: {} },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      ['a', 'b', 'c'],
+      'put_my_abc',
+      { expireAt: [] },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
   ])(
     'by passing data as first parameter, key as second parameter and options as third parameter `put(%p, "%s", %p)`',
     async (value, key, options, expected) => {
       try {
-        const data = await db.put(value, key, options);
+        const data = await db.put(value, key, options as any);
         expect(data).toEqual(expected);
         const deleteRes = await db.delete(data?.key as string);
         expect(deleteRes).toBeNull();

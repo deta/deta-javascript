@@ -113,11 +113,91 @@ describe('Base#putMany', () => {
       },
       new Error("can't set both expireIn and expireAt options"),
     ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      { expireIn: null, expireAt: null },
+      new Error("can't set both expireIn and expireAt options"),
+    ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      { expireIn: 'invalid' },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      { expireIn: new Date() },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      { expireIn: null },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      { expireIn: {} },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      { expireIn: [] },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      { expireAt: 'invalid' },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      { expireAt: null },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      { expireAt: {} },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      [
+        { name: 'Beverly', hometown: 'Copernicus City' },
+        { name: 'Jon', hometown: 'New York' },
+      ],
+      { expireAt: [] },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
   ])(
     'putMany items, with options `putMany(%p, %p)`',
     async (items, options, expected) => {
       try {
-        const data = await db.putMany(items, options);
+        const data = await db.putMany(items, options as any);
         expect(data).toMatchObject(expected);
         data?.processed?.items.forEach(async (val: any) => {
           const deleteRes = await db.delete(val.key);

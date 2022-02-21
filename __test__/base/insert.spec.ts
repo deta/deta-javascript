@@ -114,11 +114,71 @@ describe('Base#insert', () => {
       { expireIn: 5, expireAt: new Date() },
       new Error("can't set both expireIn and expireAt options"),
     ],
+    [
+      7,
+      'insert-newKey-three',
+      { expireIn: null, expireAt: null },
+      new Error("can't set both expireIn and expireAt options"),
+    ],
+    [
+      7,
+      'insert-newKey-three',
+      { expireIn: 'invalid' },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      7,
+      'insert-newKey-three',
+      { expireIn: null },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      7,
+      'insert-newKey-three',
+      { expireIn: new Date() },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      7,
+      'insert-newKey-three',
+      { expireIn: {} },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      7,
+      'insert-newKey-three',
+      { expireIn: [] },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      7,
+      'insert-newKey-three',
+      { expireAt: 'invalid' },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      7,
+      'insert-newKey-three',
+      { expireAt: null },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      7,
+      'insert-newKey-three',
+      { expireAt: {} },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      7,
+      'insert-newKey-three',
+      { expireAt: [] },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
   ])(
     'by passing data as first parameter, key as second parameter and options as third parameter `insert(%p, "%s", %p)`',
     async (value, key, options, expected) => {
       try {
-        const data = await db.insert(value, key, options);
+        const data = await db.insert(value, key, options as any);
         expect(data).toEqual(expected);
         const deleteRes = await db.delete(data.key as string);
         expect(deleteRes).toBeNull();

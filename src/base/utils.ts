@@ -1,4 +1,6 @@
 import { Day } from '../utils/date';
+import { isNumber } from '../utils/number';
+import { isUndefined } from '../utils/undefined';
 import { Action, ActionTypes } from '../types/action';
 import { ArrayType, BasicType } from '../types/basic';
 
@@ -43,21 +45,34 @@ export function getTTL(
   expireIn?: number,
   expireAt?: Date | number
 ): TTLResponse {
-  if (!expireIn && !expireAt) {
+  if (isUndefined(expireIn) && isUndefined(expireAt)) {
     return {};
   }
 
-  if (expireIn && expireAt) {
+  if (!isUndefined(expireIn) && !isUndefined(expireAt)) {
     return { error: new Error("can't set both expireIn and expireAt options") };
   }
 
-  if (expireIn) {
-    return { ttl: new Day().addSeconds(expireIn).getEpochSeconds() };
+  if (!isUndefined(expireIn)) {
+    if (!isNumber(expireIn)) {
+      return {
+        error: new Error('option expireIn should have a value of type number'),
+      };
+    }
+    return { ttl: new Day().addSeconds(expireIn as number).getEpochSeconds() };
   }
 
-  if (expireAt && expireAt instanceof Date) {
+  if (!(isNumber(expireAt) || expireAt instanceof Date)) {
+    return {
+      error: new Error(
+        'option expireAt should have a value of type number or Date'
+      ),
+    };
+  }
+
+  if (expireAt instanceof Date) {
     return { ttl: new Day(expireAt).getEpochSeconds() };
   }
 
-  return { ttl: expireAt };
+  return { ttl: expireAt as number };
 }

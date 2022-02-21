@@ -164,11 +164,91 @@ describe('Base#update', () => {
       },
       new Error("can't set both expireIn and expireAt options"),
     ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      { expireIn: null, expireAt: null },
+      new Error("can't set both expireIn and expireAt options"),
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      { expireIn: 'invalid' },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      { expireIn: new Date() },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      { expireIn: null },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      { expireIn: {} },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      { expireIn: [] },
+      new Error('option expireIn should have a value of type number'),
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      { expireAt: 'invalid' },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      { expireAt: null },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      { expireAt: {} },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
+    [
+      {
+        purchases: db.util.increment(),
+      },
+      'update-user-a',
+      { expireAt: [] },
+      new Error('option expireAt should have a value of type number or Date'),
+    ],
   ])(
     'update data `update(%p, "%s", %p)`',
     async (updates, key, options, expected) => {
       try {
-        const data = await db.update(updates, key, options);
+        const data = await db.update(updates, key, options as any);
         expect(data).toBeNull();
         const updatedData = await db.get(key);
         expect(updatedData).toEqual(expected);
