@@ -104,12 +104,6 @@ describe('Base#put', () => {
     [
       ['a', 'b', 'c'],
       'put_my_abc',
-      { expireIn: null, expireAt: null },
-      new Error("can't set both expireIn and expireAt options"),
-    ],
-    [
-      ['a', 'b', 'c'],
-      'put_my_abc',
       { expireIn: 'invalid' },
       new Error('option expireIn should have a value of type number'),
     ],
@@ -117,12 +111,6 @@ describe('Base#put', () => {
       ['a', 'b', 'c'],
       'put_my_abc',
       { expireIn: new Date() },
-      new Error('option expireIn should have a value of type number'),
-    ],
-    [
-      ['a', 'b', 'c'],
-      'put_my_abc',
-      { expireIn: null },
       new Error('option expireIn should have a value of type number'),
     ],
     [
@@ -141,12 +129,6 @@ describe('Base#put', () => {
       ['a', 'b', 'c'],
       'put_my_abc',
       { expireAt: 'invalid' },
-      new Error('option expireAt should have a value of type number or Date'),
-    ],
-    [
-      ['a', 'b', 'c'],
-      'put_my_abc',
-      { expireAt: null },
       new Error('option expireAt should have a value of type number or Date'),
     ],
     [

@@ -1,8 +1,8 @@
 import { Day } from '../utils/date';
 import { isNumber } from '../utils/number';
-import { isUndefined } from '../utils/undefined';
 import { Action, ActionTypes } from '../types/action';
 import { ArrayType, BasicType } from '../types/basic';
+import { isUndefinedOrNull } from '../utils/undefinedOrNull';
 
 export default class BaseUtils {
   public trim(): Action {
@@ -45,15 +45,15 @@ export function getTTL(
   expireIn?: number,
   expireAt?: Date | number
 ): TTLResponse {
-  if (isUndefined(expireIn) && isUndefined(expireAt)) {
+  if (isUndefinedOrNull(expireIn) && isUndefinedOrNull(expireAt)) {
     return {};
   }
 
-  if (!isUndefined(expireIn) && !isUndefined(expireAt)) {
+  if (!isUndefinedOrNull(expireIn) && !isUndefinedOrNull(expireAt)) {
     return { error: new Error("can't set both expireIn and expireAt options") };
   }
 
-  if (!isUndefined(expireIn)) {
+  if (!isUndefinedOrNull(expireIn)) {
     if (!isNumber(expireIn)) {
       return {
         error: new Error('option expireIn should have a value of type number'),

@@ -117,19 +117,7 @@ describe('Base#insert', () => {
     [
       7,
       'insert-newKey-three',
-      { expireIn: null, expireAt: null },
-      new Error("can't set both expireIn and expireAt options"),
-    ],
-    [
-      7,
-      'insert-newKey-three',
       { expireIn: 'invalid' },
-      new Error('option expireIn should have a value of type number'),
-    ],
-    [
-      7,
-      'insert-newKey-three',
-      { expireIn: null },
       new Error('option expireIn should have a value of type number'),
     ],
     [
@@ -154,12 +142,6 @@ describe('Base#insert', () => {
       7,
       'insert-newKey-three',
       { expireAt: 'invalid' },
-      new Error('option expireAt should have a value of type number or Date'),
-    ],
-    [
-      7,
-      'insert-newKey-three',
-      { expireAt: null },
       new Error('option expireAt should have a value of type number or Date'),
     ],
     [

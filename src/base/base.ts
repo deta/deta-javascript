@@ -4,9 +4,9 @@ import Requests from '../utils/request';
 import { BaseApi } from '../constants/api';
 import { isObject } from '../utils/object';
 import BaseUtils, { getTTL } from './utils';
-import { isUndefined } from '../utils/undefined';
 import { BaseGeneral } from '../constants/general';
 import { Action, ActionTypes } from '../types/action';
+import { isUndefinedOrNull } from '../utils/undefinedOrNull';
 import { DetaType, CompositeType, ArrayType, ObjectType } from '../types/basic';
 import {
   PutOptions,
@@ -79,7 +79,7 @@ export default class Base {
       {
         ...(isObject(data) ? (data as ObjectType) : { value: data }),
         ...(key && { key }),
-        ...(!isUndefined(ttl) && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }),
+        ...(!isUndefinedOrNull(ttl) && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }),
       },
     ];
 
@@ -167,7 +167,7 @@ export default class Base {
     const payload: ObjectType = {
       ...(isObject(data) ? (data as ObjectType) : { value: data }),
       ...(key && { key }),
-      ...(!isUndefined(ttl) && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }),
+      ...(!isUndefinedOrNull(ttl) && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }),
     };
 
     const { status, response, error } = await this.requests.post(
@@ -222,7 +222,7 @@ export default class Base {
       const newItem = isObject(item) ? (item as ObjectType) : { value: item };
       return {
         ...newItem,
-        ...(!isUndefined(ttl) && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }),
+        ...(!isUndefinedOrNull(ttl) && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }),
       };
     });
 
@@ -269,7 +269,7 @@ export default class Base {
       delete: ArrayType;
     } = {
       set: {
-        ...(!isUndefined(ttl) && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }),
+        ...(!isUndefinedOrNull(ttl) && { [BaseGeneral.TTL_ATTRIBUTE]: ttl }),
       },
       increment: {},
       append: {},
