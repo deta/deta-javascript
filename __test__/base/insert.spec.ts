@@ -85,29 +85,37 @@ describe('Base#insert', () => {
     }
   );
 
+  it('insert data with expireIn option', async () => {
+    const value = 7;
+    const key = 'insert-newKey-one';
+    const options = { expireIn: 500 };
+    const expected = {
+      value: 7,
+      key,
+      [BaseGeneral.TTL_ATTRIBUTE]: new Day().addSeconds(500).getEpochSeconds(),
+    };
+    const data = await db.insert(value, key, options);
+    expect(data).toEqual(expected);
+    const deleteRes = await db.delete(data.key as string);
+    expect(deleteRes).toBeNull();
+  });
+
+  it('insert data with expireAt option', async () => {
+    const value = 7;
+    const key = 'insert-newKey-two';
+    const options = { expireAt: new Date() };
+    const expected = {
+      value: 7,
+      key,
+      [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
+    };
+    const data = await db.insert(value, key, options);
+    expect(data).toEqual(expected);
+    const deleteRes = await db.delete(data.key as string);
+    expect(deleteRes).toBeNull();
+  });
+
   it.each([
-    [
-      7,
-      'insert-newKey-one',
-      { expireIn: 500 },
-      {
-        value: 7,
-        key: 'insert-newKey-one',
-        [BaseGeneral.TTL_ATTRIBUTE]: new Day()
-          .addSeconds(500)
-          .getEpochSeconds(),
-      },
-    ],
-    [
-      7,
-      'insert-newKey-two',
-      { expireAt: new Date() },
-      {
-        value: 7,
-        key: 'insert-newKey-two',
-        [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
-      },
-    ],
     [
       7,
       'insert-newKey-three',
@@ -157,13 +165,11 @@ describe('Base#insert', () => {
       new Error('option expireAt should have a value of type number or Date'),
     ],
   ])(
-    'by passing data as first parameter, key as second parameter and options as third parameter `insert(%p, "%s", %p)`',
+    'by passing data as first parameter, key as second parameter and invalid options as third parameter `insert(%p, "%s", %p)`',
     async (value, key, options, expected) => {
       try {
         const data = await db.insert(value, key, options as any);
-        expect(data).toEqual(expected);
-        const deleteRes = await db.delete(data.key as string);
-        expect(deleteRes).toBeNull();
+        expect(data).toBeNull();
       } catch (err) {
         expect(err).toEqual(expected);
       }
