@@ -1,5 +1,5 @@
 /**
- * isString returns if the provided value is an instance of string
+ * isString returns true if the provided value is an instance of string
  *
  * @param {any} value
  * @returns {boolean}
