@@ -90,7 +90,8 @@ describe('Base#insert', () => {
     async (value, key, expected) => {
       const data = await db.insert(value, key); // simulate key already exists
       try {
-        await db.insert(value, key);
+        const res = await db.insert(value, key);
+        expect(res).toBeNull();
       } catch (err) {
         expect(err).toEqual(expected);
       }

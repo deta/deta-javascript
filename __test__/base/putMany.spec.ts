@@ -101,7 +101,8 @@ describe('Base#putMany', () => {
   it('putMany items is not an instance of array', async () => {
     const value: any = 'hello';
     try {
-      await db.putMany(value);
+      const res = await db.putMany(value);
+      expect(res).toBeNull();
     } catch (err) {
       expect(err).toEqual(new Error('Items must be an array'));
     }
@@ -110,7 +111,8 @@ describe('Base#putMany', () => {
   it('putMany items length is more then 25', async () => {
     const items = new Array(26);
     try {
-      await db.putMany(items);
+      const res = await db.putMany(items);
+      expect(res).toBeNull();
     } catch (err) {
       expect(err).toEqual(
         new Error("We can't put more than 25 items at a time")
@@ -121,7 +123,8 @@ describe('Base#putMany', () => {
   it('putMany items length is zero', async () => {
     const items = new Array(0);
     try {
-      await db.putMany(items);
+      const res = await db.putMany(items);
+      expect(res).toBeNull();
     } catch (err) {
       expect(err).toEqual(new Error("Items can't be empty"));
     }
