@@ -1,6 +1,6 @@
 {
   "name": "deta",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Deta library for Javascript",
   "scripts": {
     "prebuild": "rimraf dist",
@@ -58,6 +58,6 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.7"
   }
 }

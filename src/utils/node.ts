@@ -1,5 +1,5 @@
 /**
- * isNode returns if the runtime environment is node
+ * isNode returns true if the runtime environment is node
  *
  * @returns {boolean}
  */
