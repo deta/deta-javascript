@@ -79,6 +79,200 @@ describe('Base#fetch', () => {
 
   it.each([
     [
+      { key: 'fetch-key-1' },
+      {
+        count: 1,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+        ],
+      },
+    ],
+    [
+      { 'key?pfx': 'fetch' },
+      {
+        count: 3,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'fetch-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
+    ],
+    [
+      { 'key?>': 'fetch-key-2' },
+      {
+        count: 1,
+        items: [
+          {
+            key: 'fetch-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
+    ],
+    [
+      { 'key?<': 'fetch-key-2' },
+      {
+        count: 1,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+        ],
+      },
+    ],
+    [
+      { 'key?>=': 'fetch-key-2' },
+      {
+        count: 2,
+        items: [
+          {
+            key: 'fetch-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'fetch-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
+    ],
+    [
+      { 'key?<=': 'fetch-key-2' },
+      {
+        count: 2,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+        ],
+      },
+    ],
+    [
+      { 'key?r': ['fetch-key-1', 'fetch-key-3'] },
+      {
+        count: 3,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+          {
+            key: 'fetch-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
+    ],
+    [
+      [
+        { 'key?>=': 'fetch-key-1', 'user_age?>': 40, 'user_age?<': 50 },
+        { 'key?>=': 'fetch-key-1', 'user_age?<': 40 },
+      ],
+      {
+        count: 2,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
+    ],
+    [
+      [{ name: 'Wesley' }, { user_age: 51 }],
+      {
+        count: 2,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+        ],
+      },
+    ],
+    [
       { 'user_age?lt': 30 },
       {
         count: 1,
@@ -587,4 +781,64 @@ describe('Base#fetch', () => {
     const { items } = await db.fetch();
     expect(items).toEqual(expected);
   });
+
+  it.each([
+    [{ 'key?': 'fetch-key-one' }, new Error('Bad query')],
+    [{ 'key??': 'fetch-key-one' }, new Error('Bad query')],
+    [{ 'key?pfx': 12 }, new Error('Bad query')],
+    [{ 'key?r': [] }, new Error('Bad query')],
+    [{ 'key?r': ['fetch-key-one'] }, new Error('Bad query')],
+    [{ 'key?r': 'Hello world' }, new Error('Bad query')],
+    [{ 'key?>': 12 }, new Error('Bad query')],
+    [{ 'key?>=': 12 }, new Error('Bad query')],
+    [{ 'key?<': 12 }, new Error('Bad query')],
+    [{ 'key?<=': 12 }, new Error('Bad query')],
+    [{ 'key?random': 'fetch-key-one' }, new Error('Bad query')],
+    [
+      [{ 'key?<=': 'fetch-key-one' }, { key: 'fetch-key-one' }],
+      new Error('Bad query'),
+    ],
+    [
+      [{ 'key?<=': 'fetch-key-one' }, { 'key?<=': 'fetch-key-two' }],
+      new Error('Bad query'),
+    ],
+    [[{ user_age: 27 }, { 'key?<=': 'fetch-key-two' }], new Error('Bad query')],
+    [
+      [
+        { user_age: 27, key: 'fetch-key-two', 'key?>': 'fetch-key-three' },
+        { 'key?<=': 'fetch-key-two' },
+      ],
+      new Error('Bad query'),
+    ],
+  ])(
+    'fetch data using invalid fetch key query `fetch(%p)`',
+    async (query, expected) => {
+      try {
+        const res = await db.fetch(query);
+        expect(res).toBeNull();
+      } catch (err) {
+        expect(err).toEqual(expected);
+      }
+    }
+  );
+
+  it.each([
+    [{ 'name?': 'Beverly' }, new Error('Bad query')],
+    [{ 'name??': 'Beverly' }, new Error('Bad query')],
+    [{ '?': 'Beverly' }, new Error('Bad query')],
+    [{ 'user_age?r': [] }, new Error('Bad query')],
+    [{ 'user_age?r': [21] }, new Error('Bad query')],
+    [{ 'name?random': 'Beverly' }, new Error('Bad query')],
+    [{ 'name?pfx': 12 }, new Error('Bad query')],
+  ])(
+    'fetch data using invalid fetch query `fetch(%p)`',
+    async (query, expected) => {
+      try {
+        const res = await db.fetch(query);
+        expect(res).toBeNull();
+      } catch (err) {
+        expect(err).toEqual(expected);
+      }
+    }
+  );
 });

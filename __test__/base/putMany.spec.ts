@@ -47,61 +47,75 @@ describe('Base#putMany', () => {
     });
   });
 
+  it('putMany data with expireIn option', async () => {
+    const items = [
+      { name: 'Beverly', hometown: 'Copernicus City' },
+      { name: 'Jon', hometown: 'New York' },
+    ];
+    const options = {
+      expireIn: 233,
+    };
+    const expected = {
+      processed: {
+        items: [
+          {
+            hometown: 'Copernicus City',
+            name: 'Beverly',
+            [BaseGeneral.TTL_ATTRIBUTE]: new Day()
+              .addSeconds(233)
+              .getEpochSeconds(),
+          },
+          {
+            hometown: 'New York',
+            name: 'Jon',
+            [BaseGeneral.TTL_ATTRIBUTE]: new Day()
+              .addSeconds(233)
+              .getEpochSeconds(),
+          },
+        ],
+      },
+    };
+    const data = await db.putMany(items, options);
+    expect(data).toMatchObject(expected);
+    data?.processed?.items.forEach(async (val: any) => {
+      const deleteRes = await db.delete(val.key);
+      expect(deleteRes).toBeNull();
+    });
+  });
+
+  it('putMany data with expireAt option', async () => {
+    const items = [
+      { name: 'Beverly', hometown: 'Copernicus City' },
+      { name: 'Jon', hometown: 'New York' },
+    ];
+    const options = {
+      expireAt: new Date(),
+    };
+    const expected = {
+      processed: {
+        items: [
+          {
+            hometown: 'Copernicus City',
+            name: 'Beverly',
+            [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
+          },
+          {
+            hometown: 'New York',
+            name: 'Jon',
+            [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
+          },
+        ],
+      },
+    };
+    const data = await db.putMany(items, options);
+    expect(data).toMatchObject(expected);
+    data?.processed?.items.forEach(async (val: any) => {
+      const deleteRes = await db.delete(val.key);
+      expect(deleteRes).toBeNull();
+    });
+  });
+
   it.each([
-    [
-      [
-        { name: 'Beverly', hometown: 'Copernicus City' },
-        { name: 'Jon', hometown: 'New York' },
-      ],
-      {
-        expireIn: 233,
-      },
-      {
-        processed: {
-          items: [
-            {
-              hometown: 'Copernicus City',
-              name: 'Beverly',
-              [BaseGeneral.TTL_ATTRIBUTE]: new Day()
-                .addSeconds(233)
-                .getEpochSeconds(),
-            },
-            {
-              hometown: 'New York',
-              name: 'Jon',
-              [BaseGeneral.TTL_ATTRIBUTE]: new Day()
-                .addSeconds(233)
-                .getEpochSeconds(),
-            },
-          ],
-        },
-      },
-    ],
-    [
-      [
-        { name: 'Beverly', hometown: 'Copernicus City' },
-        { name: 'Jon', hometown: 'New York' },
-      ],
-      {
-        expireAt: new Date(),
-      },
-      {
-        processed: {
-          items: [
-            {
-              hometown: 'Copernicus City',
-              name: 'Beverly',
-              [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
-            },
-            {
-              hometown: 'New York',
-              name: 'Jon',
-              [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
-            },
-          ],
-        },
-      },
-    ],
     [
       [
         { name: 'Beverly', hometown: 'Copernicus City' },
@@ -170,15 +184,11 @@ describe('Base#putMany', () => {
       new Error('option expireAt should have a value of type number or Date'),
     ],
   ])(
-    'putMany items, with options `putMany(%p, %p)`',
+    'putMany items, with invalid options `putMany(%p, %p)`',
     async (items, options, expected) => {
       try {
         const data = await db.putMany(items, options as any);
-        expect(data).toMatchObject(expected);
-        data?.processed?.items.forEach(async (val: any) => {
-          const deleteRes = await db.delete(val.key);
-          expect(deleteRes).toBeNull();
-        });
+        expect(data).toBeNull();
       } catch (err) {
         expect(err).toEqual(expected);
       }
@@ -250,7 +260,8 @@ describe('Base#putMany', () => {
   it('putMany items is not an instance of array', async () => {
     const value: any = 'hello';
     try {
-      await db.putMany(value);
+      const res = await db.putMany(value);
+      expect(res).toBeNull();
     } catch (err) {
       expect(err).toEqual(new Error('Items must be an array'));
     }
@@ -259,7 +270,8 @@ describe('Base#putMany', () => {
   it('putMany items length is more then 25', async () => {
     const items = new Array(26);
     try {
-      await db.putMany(items);
+      const res = await db.putMany(items);
+      expect(res).toBeNull();
     } catch (err) {
       expect(err).toEqual(
         new Error("We can't put more than 25 items at a time")
@@ -270,7 +282,8 @@ describe('Base#putMany', () => {
   it('putMany items length is zero', async () => {
     const items = new Array(0);
     try {
-      await db.putMany(items);
+      const res = await db.putMany(items);
+      expect(res).toBeNull();
     } catch (err) {
       expect(err).toEqual(new Error("Items can't be empty"));
     }

@@ -73,28 +73,38 @@ describe('Base#put', () => {
     }
   );
 
+  it('put data with expireIn option', async () => {
+    const value = { name: 'alex', age: 77 };
+    const key = 'put_two';
+    const options = { expireIn: 5 };
+    const expected = {
+      name: 'alex',
+      age: 77,
+      key,
+      [BaseGeneral.TTL_ATTRIBUTE]: new Day().addSeconds(5).getEpochSeconds(),
+    };
+    const data = await db.put(value, key, options);
+    expect(data).toEqual(expected);
+    const deleteRes = await db.delete(data?.key as string);
+    expect(deleteRes).toBeNull();
+  });
+
+  it('put data with expireAt option', async () => {
+    const value = 'hello, worlds';
+    const key = 'put_three';
+    const options = { expireAt: new Date() };
+    const expected = {
+      value: 'hello, worlds',
+      key,
+      [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
+    };
+    const data = await db.put(value, key, options);
+    expect(data).toEqual(expected);
+    const deleteRes = await db.delete(data?.key as string);
+    expect(deleteRes).toBeNull();
+  });
+
   it.each([
-    [
-      { name: 'alex', age: 77 },
-      'put_two',
-      { expireIn: 5 },
-      {
-        name: 'alex',
-        age: 77,
-        key: 'put_two',
-        [BaseGeneral.TTL_ATTRIBUTE]: new Day().addSeconds(5).getEpochSeconds(),
-      },
-    ],
-    [
-      'hello, worlds',
-      'put_three',
-      { expireAt: new Date() },
-      {
-        value: 'hello, worlds',
-        key: 'put_three',
-        [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
-      },
-    ],
     [
       ['a', 'b', 'c'],
       'put_my_abc',
@@ -144,13 +154,11 @@ describe('Base#put', () => {
       new Error('option expireAt should have a value of type number or Date'),
     ],
   ])(
-    'by passing data as first parameter, key as second parameter and options as third parameter `put(%p, "%s", %p)`',
+    'by passing data as first parameter, key as second parameter and invalid options as third parameter `put(%p, "%s", %p)`',
     async (value, key, options, expected) => {
       try {
         const data = await db.put(value, key, options as any);
-        expect(data).toEqual(expected);
-        const deleteRes = await db.delete(data?.key as string);
-        expect(deleteRes).toBeNull();
+        expect(data).toBeNull();
       } catch (err) {
         expect(err).toEqual(expected);
       }

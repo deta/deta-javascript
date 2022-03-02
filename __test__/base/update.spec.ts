@@ -109,50 +109,17 @@ describe('Base#update', () => {
         purchases: 4,
       },
     ],
-    [
-      {
-        purchases: db.util.increment(),
-      },
-      'update-user-a',
-      {
-        expireIn: 5,
-      },
-      {
-        key: 'update-user-a',
-        username: 'jimmy',
-        profile: {
-          age: 33,
-          active: true,
-          email: 'jimmy@deta.sh',
-        },
-        likes: ['anime', 'ramen', 'momo'],
-        dislikes: ['romcom', 'action', 'comedy'],
-        purchases: 5,
-        [BaseGeneral.TTL_ATTRIBUTE]: new Day().addSeconds(5).getEpochSeconds(),
-      },
-    ],
-    [
-      {
-        purchases: db.util.increment(),
-      },
-      'update-user-a',
-      {
-        expireAt: new Date(),
-      },
-      {
-        key: 'update-user-a',
-        username: 'jimmy',
-        profile: {
-          age: 33,
-          active: true,
-          email: 'jimmy@deta.sh',
-        },
-        likes: ['anime', 'ramen', 'momo'],
-        dislikes: ['romcom', 'action', 'comedy'],
-        purchases: 6,
-        [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
-      },
-    ],
+  ])(
+    'update data `update(%p, "%s", %p)`',
+    async (updates, key, options, expected) => {
+      const data = await db.update(updates, key, options as any);
+      expect(data).toBeNull();
+      const updatedData = await db.get(key);
+      expect(updatedData).toEqual(expected);
+    }
+  );
+
+  it.each([
     [
       {
         purchases: db.util.increment(),
@@ -221,18 +188,70 @@ describe('Base#update', () => {
       new Error('option expireAt should have a value of type number or Date'),
     ],
   ])(
-    'update data `update(%p, "%s", %p)`',
+    'update data with invalid options `update(%p, "%s", %p)`',
     async (updates, key, options, expected) => {
       try {
         const data = await db.update(updates, key, options as any);
         expect(data).toBeNull();
-        const updatedData = await db.get(key);
-        expect(updatedData).toEqual(expected);
       } catch (err) {
         expect(err).toEqual(expected);
       }
     }
   );
+
+  it('update data with expireIn option', async () => {
+    const updates = {
+      purchases: db.util.increment(),
+    };
+    const key = 'update-user-a';
+    const options = {
+      expireIn: 5,
+    };
+    const expected = {
+      key,
+      username: 'jimmy',
+      profile: {
+        age: 33,
+        active: true,
+        email: 'jimmy@deta.sh',
+      },
+      likes: ['anime', 'ramen', 'momo'],
+      dislikes: ['romcom', 'action', 'comedy'],
+      purchases: 5,
+      [BaseGeneral.TTL_ATTRIBUTE]: new Day().addSeconds(5).getEpochSeconds(),
+    };
+    const data = await db.update(updates, key, options);
+    expect(data).toBeNull();
+    const updatedData = await db.get(key);
+    expect(updatedData).toEqual(expected);
+  });
+
+  it('update data with expireAt option', async () => {
+    const updates = {
+      purchases: db.util.increment(),
+    };
+    const key = 'update-user-a';
+    const options = {
+      expireAt: new Date(),
+    };
+    const expected = {
+      key,
+      username: 'jimmy',
+      profile: {
+        age: 33,
+        active: true,
+        email: 'jimmy@deta.sh',
+      },
+      likes: ['anime', 'ramen', 'momo'],
+      dislikes: ['romcom', 'action', 'comedy'],
+      purchases: 6,
+      [BaseGeneral.TTL_ATTRIBUTE]: new Day().getEpochSeconds(),
+    };
+    const data = await db.update(updates, key, options);
+    expect(data).toBeNull();
+    const updatedData = await db.get(key);
+    expect(updatedData).toEqual(expected);
+  });
 
   it.each([
     [{}, '   ', new Error('Key is empty')],
