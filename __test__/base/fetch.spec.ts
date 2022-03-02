@@ -226,6 +226,53 @@ describe('Base#fetch', () => {
       },
     ],
     [
+      [
+        { 'key?>=': 'fetch-key-1', 'user_age?>': 40, 'user_age?<': 50 },
+        { 'key?>=': 'fetch-key-1', 'user_age?<': 40 },
+      ],
+      {
+        count: 2,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-3',
+            name: 'Kevin Garnett',
+            user_age: 43,
+            hometown: 'Greenville',
+            email: 'kevin@email.com',
+          },
+        ],
+      },
+    ],
+    [
+      [{ name: 'Wesley' }, { user_age: 51 }],
+      {
+        count: 2,
+        items: [
+          {
+            key: 'fetch-key-1',
+            name: 'Wesley',
+            user_age: 27,
+            hometown: 'San Francisco',
+            email: 'wesley@deta.sh',
+          },
+          {
+            key: 'fetch-key-2',
+            name: 'Beverly',
+            user_age: 51,
+            hometown: 'Copernicus City',
+            email: 'beverly@deta.sh',
+          },
+        ],
+      },
+    ],
+    [
       { 'user_age?lt': 30 },
       {
         count: 1,
