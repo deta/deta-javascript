@@ -24,7 +24,7 @@ Documentation for the Deta JavaScript SDK can be found on the [Deta website](htt
 
 ## Security Vulnerabilities
 
-Please review [our security policy](https://github.com/deta/deta-python/security/policy) on how to report security vulnerabilities.
+Please review [our security policy](https://github.com/deta/deta-javascript/security/policy) on how to report security vulnerabilities.
 
 ## License
 
