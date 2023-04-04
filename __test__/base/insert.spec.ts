@@ -202,4 +202,18 @@ describe('Base#insert', () => {
       expect(deleteRes).toBeNull();
     }
   );
+
+  it('by passing key that already exists in the payload', async () => {
+    const value = { key: 'foo', data: 'bar' };
+    const entry = await db.insert(value);
+    try {
+      const res = await db.insert(value);
+      expect(res).toBeNull();
+    } catch (err) {
+      expect(err).toEqual(new Error('Item with key foo already exists'));
+    }
+    // cleanup
+    const deleteRes = await db.delete(entry.key as string);
+    expect(deleteRes).toBeNull();
+  });
 });
