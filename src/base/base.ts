@@ -318,7 +318,8 @@ export default class Base {
     query: CompositeType = [],
     options?: FetchOptions
   ): Promise<FetchResponse> {
-    const { limit = 1000, last = '', sort = '' } = options || {};
+    const { limit = 1000, last = '', desc = false } = options || {};
+    const sort = desc ? 'desc' : '';
 
     const payload = {
       query: Array.isArray(query) ? query : [query],

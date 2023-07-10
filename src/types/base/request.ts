@@ -1,7 +1,7 @@
 export interface FetchOptions {
   limit?: number;
   last?: string;
-  sort?: string;
+  desc?: boolean;
 }
 
 export interface PutOptions {
