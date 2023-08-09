@@ -48,7 +48,7 @@ export default class Base {
     host?: string
   ) {
     const baseURL = url
-      .base(host)
+      .base(type, host)
       .replace(':base_name', baseName)
       .replace(':project_id', projectId);
     this.requests = new Requests(key, type, baseURL);
