@@ -17,12 +17,16 @@ export function Deta(projectKey?: string, authToken?: string): DetaClass {
     return new DetaClass(token, KeyType.AuthToken, key);
   }
 
-  const apiKey = key || process.env.DETA_PROJECT_KEY?.trim();
-  if (!apiKey) {
-    throw new Error('Project key is not defined');
+  const apiKey = key || (typeof process !== 'undefined' ? process.env.DETA_PROJECT_KEY?.trim() : undefined);
+  if (apiKey) {
+    return new DetaClass(apiKey, KeyType.ProjectKey, apiKey.split('_')[0]);
   }
 
-  return new DetaClass(apiKey, KeyType.ProjectKey, apiKey.split('_')[0]);
+  if (typeof window !== 'undefined') {
+    return new DetaClass('dummy', KeyType.DummyKey, 'dummy');
+  }
+
+  throw new Error('Project key is not defined');
 }
 
 /**

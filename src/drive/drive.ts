@@ -37,7 +37,7 @@ export default class Drive {
     host?: string
   ) {
     const baseURL = url
-      .drive(host)
+      .drive(type, host)
       .replace(':drive_name', driveName)
       .replace(':project_id', projectId);
     this.requests = new Requests(key, type, baseURL);
