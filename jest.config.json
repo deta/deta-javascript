@@ -1,8 +1,0 @@
-{
-  "verbose": true,
-  "errorOnDeprecated": true,
-  "globalSetup": "./scripts/jest/globalSetup.ts",
-  "preset": "ts-jest",
-  "modulePathIgnorePatterns": ["dist", "node_modules"],
-  "testTimeout": 30000
-}
