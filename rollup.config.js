@@ -1,19 +1,11 @@
 import replace from '@rollup/plugin-replace';
 import { terser } from 'rollup-plugin-terser';
 import commonjs from '@rollup/plugin-commonjs';
+import cleanup from 'rollup-plugin-cleanup';
 import typescript from '@rollup/plugin-typescript';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 
 import pkg from './package.json';
-
-const banner = `
-/**
- * @license
- * author: ${pkg.author}
- * ${pkg.name}@${pkg.version}
- * Released under the ${pkg.license} license.
- */
-`;
 
 export default [
   {
@@ -22,7 +14,6 @@ export default [
       {
         file: pkg.main,
         format: 'cjs', // commonJS
-        banner,
       },
     ],
     external: [
@@ -37,6 +28,9 @@ export default [
         browser: false,
       }),
       commonjs({ extensions: ['.ts'] }),
+      cleanup({
+        comments: 'none',
+      }),
     ],
   },
   {
@@ -45,8 +39,7 @@ export default [
       {
         name: 'deta',
         file: pkg.browser,
-        format: 'umd', // browser
-        banner,
+        format: 'es', // browser
       },
     ],
     plugins: [
@@ -64,6 +57,9 @@ export default [
         preventAssignment: true,
       }),
       terser(),
+      cleanup({
+        comments: 'none',
+      }),
     ],
   },
 ];
