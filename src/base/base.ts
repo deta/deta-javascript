@@ -179,7 +179,8 @@ export default class Base {
       }
     );
     if (error && status === 409) {
-      throw new Error(`Item with key ${key} already exists`);
+      const resolvedKey = key || payload.key;
+      throw new Error(`Item with key ${resolvedKey} already exists`);
     }
     if (error) {
       throw error;
