@@ -1,6 +1,6 @@
 {
   "name": "deta",
-  "version": "2.0.0-rc.1",
+  "version": "2.0.0",
   "description": "Deta library for Javascript",
   "scripts": {
     "prebuild": "rimraf dist",
