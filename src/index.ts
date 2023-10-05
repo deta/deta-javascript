@@ -13,16 +13,24 @@ import { KeyType } from './types/key';
 export function Deta(projectKey?: string, authToken?: string): DetaClass {
   const token = authToken?.trim();
   const key = projectKey?.trim();
+
   if (token && key) {
     return new DetaClass(token, KeyType.AuthToken, key);
   }
 
-  const apiKey = key || (typeof process !== 'undefined' ? process.env.DETA_PROJECT_KEY?.trim() : undefined);
-  if (apiKey) {
-    return new DetaClass(apiKey, KeyType.ProjectKey, apiKey.split('_')[0]);
+  if (typeof process !== 'undefined') {
+    const projectKey = key || process.env.DETA_PROJECT_KEY?.trim();
+    if (projectKey) {
+      return new DetaClass(projectKey, KeyType.ProjectKey, projectKey.split('_')[0]);
+    }
   }
 
   if (typeof window !== 'undefined') {
+    if (window.__space_code_card_project_key) {
+      const projectKey = window.__space_code_card_project_key;
+      return new DetaClass(projectKey, KeyType.ProjectKey, projectKey.split('_')[0]);
+    }
+
     return new DetaClass('dummy', KeyType.DummyKey, 'dummy');
   }
 
